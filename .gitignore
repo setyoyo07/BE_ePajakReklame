@@ -121,6 +121,10 @@ dmypy.json
 
 # C extensions
 
+# deploy_rsa
+deploy_rsa
+deploy_rsa.pub
+
 # Distribution / packaging
 
 # PyInstaller
