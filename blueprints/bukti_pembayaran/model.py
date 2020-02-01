@@ -2,7 +2,7 @@ from blueprints import db
 from flask_restful import fields
 from datetime import datetime
 
-
+# Model database bukti pembayaran
 class BuktiPembayaran(db.Model):
     __tablename__ = "bukti_pembayaran"
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
