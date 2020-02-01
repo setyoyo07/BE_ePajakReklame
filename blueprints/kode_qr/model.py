@@ -4,7 +4,7 @@ from datetime import datetime
 
 
 class KodeQR(db.Model):
-    __tablename__ = "kodeQR"
+    __tablename__ = "kode_QR"
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     bukti_pembayaran_id_id = db.Column(db.Integer, db.ForeignKey("bukti_pembayaran.id"))
     kode_unik = db.Column(db.String(255), default='')
