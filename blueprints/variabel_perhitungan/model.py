@@ -2,9 +2,9 @@ from blueprints import db
 from flask_restful import fields
 from datetime import datetime
 
-
+# Model database variabel perhitungan untuk keperluan perhitungan total biaya pajak
 class VariabelPerhitungan(db.Model):
-    __tablename__ = "variabelperhitungan"
+    __tablename__ = "variabel_perhitungan"
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     tarif = db.Column(db.String(255), default='')
     tipe = db.Column(db.String(255), default='')
