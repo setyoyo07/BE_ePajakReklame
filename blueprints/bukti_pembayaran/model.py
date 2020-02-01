@@ -4,7 +4,7 @@ from datetime import datetime
 
 
 class BuktiPembayaran(db.Model):
-    __tablename__ = "buktipembayaran"
+    __tablename__ = "bukti_pembayaran"
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     laporan_id = db.Column(db.Integer, db.ForeignKey("laporan.id"))
     daerah_id = db.Column(db.Integer, db.ForeignKey("daerah.id"))
@@ -22,7 +22,7 @@ class BuktiPembayaran(db.Model):
         "laporan_id": fields.Integer,
         "daerah_id": fields.Integer,
         "nomor_sspd": fields.String,
-        "status_buat_kode_qr": fields.Boolean
+        "status_buat_kode_qr": fields.Boolean,
         "pelanggaran": fields.String,
         "jumlah_reklame": fields.Integer,
     }
