@@ -7,15 +7,16 @@ from flask_restful import Api
 blueprint_objek_pajak = Blueprint("objek_pajak", __name__)
 api = Api(blueprint_objek_pajak)
 
+#model database objek_pajak
 class ObjekPajak(db.Model):
     __tablename__ = "objek_pajak"
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     payer_id = db.Column(db.Integer, db.ForeignKey("payer.id"))
     nopd = db.Column(db.Integer, nullable=False)
-    nama_reklame = db.Column(db.String(500), nullable=False)
-    judul_reklame = db.Column(db.String(500), nullable=False)
-    tipe_reklame = db.Column(db.String(100), nullable=False)
-    jenis_reklame = db.Column(db.String(100), nullable=False)
+    nama_reklame = db.Column(db.String(255), nullable=False)
+    judul_reklame = db.Column(db.String(255), nullable=False)
+    tipe_reklame = db.Column(db.String(255), nullable=False)
+    jenis_reklame = db.Column(db.String(255), nullable=False)
     foto = db.Column(db.String(1000), nullable=False)
     panjang = db.Column(db.Integer, nullable=False)
     lebar = db.Column(db.Integer, nullable=False)
@@ -24,9 +25,9 @@ class ObjekPajak(db.Model):
     tanggal_pemasangan = db.Column(db.DateTime)
     tanggal_pembongkaran = db.Column(db.DateTime)
     masa_pajak = db.Column(db.Integer, nullable=False)
-    longitude = db.Column(db.String(100), nullable=False)
-    latitude = db.Column(db.String(100), nullable=False)
-    lokasi = db.Column(db.String(200), nullable=False)
+    longitude = db.Column(db.String(255), nullable=False)
+    latitude = db.Column(db.String(255), nullable=False)
+    lokasi = db.Column(db.String(255), nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.now())
     updated_at = db.Column(db.DateTime, default=datetime.now())
     
@@ -75,4 +76,4 @@ class ObjekPajak(db.Model):
         self.lokasi = lokasi
 
     def __repr__(self):
-        return "<Products %r>" % self.id
+        return "<ObjekPajak %r>" % self.id
