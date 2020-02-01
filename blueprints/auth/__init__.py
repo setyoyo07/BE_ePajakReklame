@@ -3,7 +3,6 @@ from flask_restful import Api, Resource, reqparse, marshal
 from flask_jwt_extended import create_access_token
 from blueprints.officer.model import *
 from blueprints.payer.model import *
-from password_strength import PasswordPolicy
 import hashlib
 
 blueprint_auth = Blueprint("auth", __name__)
@@ -44,4 +43,4 @@ class CreateTokenResources(Resource):
                 return {'status': 'UNAUTHORIZED', 'message': 'invalid key or secret'}, 401
 
 
-api.add_resource(CreateTokenResources, "login/")
+api.add_resource(CreateTokenResources, "/")
