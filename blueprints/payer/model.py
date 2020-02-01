@@ -2,7 +2,7 @@ from blueprints import db
 from flask_restful import fields
 from datetime import datetime
 
-
+#model database payer
 class Payer(db.Model):
     __tablename__ = "payer"
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
