@@ -7,6 +7,7 @@ from flask_restful import Api
 blueprint_daerah = Blueprint("daerah", __name__)
 api = Api(blueprint_daerah)
 
+#model database daerah berupa kota/kabupaten
 class Daerah(db.Model):
     __tablename__ = "daerah"
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
