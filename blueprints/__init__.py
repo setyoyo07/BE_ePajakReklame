@@ -33,7 +33,7 @@ migrate = Migrate(app, db)
 manager = Manager(app)
 manager.add_command('db', MigrateCommand)
 
-#jwt officer
+#fungsi untuk authentifikasi user sebagai officer
 def officer_required(fn):
     @wraps(fn)
     def wrapper(*args, **kwargs):
@@ -44,7 +44,7 @@ def officer_required(fn):
         return fn(*args, **kwargs)
     return wrapper
 
-#jwt surveyor
+#fungsi untuk authentifikasi user sebagai surveyor
 def surveyor_required(fn):
     @wraps(fn)
     def wrapper(*args, **kwargs):
@@ -55,7 +55,7 @@ def surveyor_required(fn):
         return fn(*args, **kwargs)
     return wrapper
 
-#jwt payer
+#fungsi untuk authentifikasi user sebagai payer
 def payer_required(fn):
     @wraps(fn)
     def wrapper(*args, **kwargs):
@@ -66,6 +66,7 @@ def payer_required(fn):
         return fn(*args, **kwargs)
     return wrapper
 
+#fungsi untuk record log
 @app.after_request
 def after_request(response):
     try:
@@ -92,6 +93,6 @@ from blueprints.auth import blueprint_auth
 from blueprints.daerah.model import blueprint_daerah
 from blueprints.objek_pajak.model import blueprint_objek_pajak
 
-app.register_blueprint(blueprint_auth, url_prefix="/")
+app.register_blueprint(blueprint_auth, url_prefix="/login")
 
 db.create_all()
