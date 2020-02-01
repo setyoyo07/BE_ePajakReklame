@@ -30,8 +30,8 @@ class Laporan(db.Model):
         "tarif_tinggi_tanah": fields.Integer,
         "total_pajak": fields.Integer,
         "nomor_skpd": fields.String,
-        "status_pembayaran": fields.Boolean
-        "pembatalan_laporan": fields.Boolean
+        "status_pembayaran": fields.Boolean,
+        "pembatalan_laporan": fields.Boolean,
         "status_verifikasi": fields.Boolean
     }
 
