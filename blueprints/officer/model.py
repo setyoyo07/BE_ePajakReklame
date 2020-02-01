@@ -2,7 +2,7 @@ from blueprints import db
 from flask_restful import fields
 from datetime import datetime
 
-
+#model database officer
 class Officer(db.Model):
     __tablename__ = "officer"
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
