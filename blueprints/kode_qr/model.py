@@ -2,7 +2,7 @@ from blueprints import db
 from flask_restful import fields
 from datetime import datetime
 
-
+# model database kode QR
 class KodeQR(db.Model):
     __tablename__ = "kode_QR"
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
