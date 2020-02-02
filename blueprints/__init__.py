@@ -33,17 +33,40 @@ migrate = Migrate(app, db)
 manager = Manager(app)
 manager.add_command('db', MigrateCommand)
 
-#admin & non-admin authorization
-def admin_required(fn):
+#fungsi untuk authentifikasi user sebagai officer
+def officer_required(fn):
     @wraps(fn)
     def wrapper(*args, **kwargs):
         verify_jwt_in_request()
         claims = get_jwt_claims()
-        if not claims["is_admin"]:
-            return {"status": "FORBIDDEN", "message": "You should be an admin to access this point"}, 403
+        if claims["role"] != "officer":
+            return {"status": "FORBIDDEN", "message": "You should be an officer to access this point"}, 403
         return fn(*args, **kwargs)
     return wrapper
 
+#fungsi untuk authentifikasi user sebagai surveyor
+def surveyor_required(fn):
+    @wraps(fn)
+    def wrapper(*args, **kwargs):
+        verify_jwt_in_request()
+        claims = get_jwt_claims()
+        if claims["role"]!="surveyor":
+            return {"status": "FORBIDDEN", "message": "You should be a surveyor to access this point"}, 403
+        return fn(*args, **kwargs)
+    return wrapper
+
+#fungsi untuk authentifikasi user sebagai payer
+def payer_required(fn):
+    @wraps(fn)
+    def wrapper(*args, **kwargs):
+        verify_jwt_in_request()
+        claims = get_jwt_claims()
+        if claims["role"]!="payer":
+            return {"status": "FORBIDDEN", "message": "You should be a payer to access this point"}, 403
+        return fn(*args, **kwargs)
+    return wrapper
+
+#fungsi untuk record log
 @app.after_request
 def after_request(response):
     try:
@@ -67,6 +90,8 @@ def after_request(response):
     return response
 
 from blueprints.auth import blueprint_auth
+from blueprints.daerah.model import blueprint_daerah
+from blueprints.objek_pajak.model import blueprint_objek_pajak
 
 app.register_blueprint(blueprint_auth, url_prefix="/login")
 
