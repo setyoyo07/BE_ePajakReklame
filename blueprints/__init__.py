@@ -92,7 +92,11 @@ def after_request(response):
 from blueprints.auth import blueprint_auth
 from blueprints.daerah.model import blueprint_daerah
 from blueprints.objek_pajak.model import blueprint_objek_pajak
+from blueprints.officer.resources import blueprint_officer
+from blueprints.payer.resources import blueprint_payer
 
 app.register_blueprint(blueprint_auth, url_prefix="/login")
+app.register_blueprint(blueprint_officer, url_prefix="/officers")
+app.register_blueprint(blueprint_payer, url_prefix="/payers")
 
 db.create_all()
