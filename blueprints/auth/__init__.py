@@ -23,13 +23,18 @@ class CreateTokenResources(Resource):
         args = parser.parse_args()
         pin_hashlib = hashlib.md5(args["pin"].encode()).hexdigest()
 
+        # jika yang login adalah officer
         if args["nip"] != "" and args["npwpd"] == "":
             list_officer = Officer.query.filter_by(nip=args['nip']).filter_by(pin=pin_hashlib)
-            user_claims_data = list_officer.first() 
-            user_claims_data = marshal(user_claims_data, Officer.jwt_claim_fields)
-            token = create_access_token(identity=user_claims_data['nip'], user_claims=user_claims_data)
-            user_claims_data['token'] = token
-            return {"token": token, "message": "Token is successfully created"}, 200, {"Content-Type": "application/json"}
+            user_claims_data = list_officer.first()
+            if user_claims_data is None:
+                return {"message": "NIP not match"}, 404
+            else : 
+                user_claims_data = marshal(user_claims_data, Officer.jwt_claim_fields)
+                token = create_access_token(identity=user_claims_data['nip'], user_claims=user_claims_data)
+                user_claims_data['token'] = token
+                return {"token": token, "message": "Token is successfully created"}, 200, {"Content-Type": "application/json"}
+        # jika yang login adalah payer
         else:
             list_payer = Payer.query.filter_by(npwpd=args['npwpd']).filter_by(pin=pin_hashlib)
             user_claims_data = list_payer.first()
@@ -40,7 +45,7 @@ class CreateTokenResources(Resource):
                 user_claims_data['token'] = token
                 return {"token": token, "message": "Token is successfully created"}, 200, {"Content-Type": "application/json"}
             else:
-                return {'status': 'UNAUTHORIZED', 'message': 'invalid key or secret'}, 401
+                return {'message': 'NPWPD not match'}, 404
 
 
 api.add_resource(CreateTokenResources, "/")
