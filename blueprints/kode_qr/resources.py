@@ -4,6 +4,7 @@ from blueprints import db, app, officer_required, payer_required, surveyor_requi
 from .model import *
 from flask_jwt_extended import jwt_required, get_jwt_claims, verify_jwt_in_request
 from blueprints.bukti_pembayaran.model import *
+from blueprints.laporan.model import *
 from blueprints.objek_pajak.model import *
 
 blueprint_kode_qr = Blueprint("kode_QR", __name__)
@@ -74,8 +75,13 @@ class OfficerKodeQRList(Resource):
         list_kode_QR = []
         for kode_QR_satuan in kode_QR.limit(args['rp']).offset(offset).all():
             list_kode_QR.append(marshal(kode_QR_satuan, KodeQR.response_fields))
-        
-        return list_kode_QR, 200, {'Content-Type': 'application/json'}
+
+        bukti_pembayaran = BuktiPembayaran.query.get(args["bukti_pembayaran_id"])
+        laporan = Laporan.query.get(bukti_pembayaran.laporan_id)
+        objek_pajak = ObjekPajak.query.get(laporan.objek_pajak_id)
+        return {"list_kode_qr": list_kode_QR, "nomor_sspd": bukti_pembayaran.nomor_sspd,
+                "pelanggaran": bukti_pembayaran.pelanggaran,
+                "nama_reklame": objek_pajak.nama_reklame}, 200, {'Content-Type': 'application/json'}
 
 api.add_resource(OfficerKodeQRList, '/officer')
 api.add_resource(OfficerKodeQRResource, '/officer', '/officer/<int:id>')
