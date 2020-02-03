@@ -1,6 +1,11 @@
 from blueprints import db
 from flask_restful import fields
 from datetime import datetime
+from flask import Blueprint
+from flask_restful import Api
+
+blueprint_laporan = Blueprint("laporan", __name__)
+api = Api(blueprint_laporan)
 
 # Model database laporan pajak reklame
 class Laporan(db.Model):
@@ -10,7 +15,7 @@ class Laporan(db.Model):
     tarif_klasifikasi_jalan = db.Column(db.Integer, default=0)
     tarif_letak_pemasangan = db.Column(db.Integer, default=0)
     tarif_njopr = db.Column(db.Integer, default=0)
-    tarif_tingi_tanah = db.Column(db.Integer, default=0)
+    tarif_tinggi_tanah = db.Column(db.Integer, default=0)
     total_pajak = db.Column(db.Integer, default=0)
     nomor_skpd = db.Column(db.String(255), default='')
     status_pembayaran = db.Column(db.Boolean, default=False)

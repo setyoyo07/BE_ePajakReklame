@@ -1,6 +1,11 @@
 from blueprints import db
 from flask_restful import fields
 from datetime import datetime
+from flask import Blueprint
+from flask_restful import Api
+
+blueprint_bukti_pembayaran = Blueprint("bukti_pembayaran", __name__)
+api = Api(blueprint_bukti_pembayaran)
 
 # Model database bukti pembayaran
 class BuktiPembayaran(db.Model):
