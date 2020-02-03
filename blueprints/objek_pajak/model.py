@@ -12,7 +12,7 @@ class ObjekPajak(db.Model):
     __tablename__ = "objek_pajak"
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     payer_id = db.Column(db.Integer, db.ForeignKey("payer.id"))
-    nopd = db.Column(db.Integer, nullable=False)
+    nopd = db.Column(db.String(255), nullable=False)
     nama_reklame = db.Column(db.String(255), nullable=False)
     judul_reklame = db.Column(db.String(255), nullable=False)
     tipe_reklame = db.Column(db.String(255), nullable=False)
@@ -34,7 +34,7 @@ class ObjekPajak(db.Model):
     response_fields = {
         "id": fields.Integer,
         "payer_id": fields.Integer,
-        "nopd": fields.Integer,
+        "nopd": fields.String,
         "nama_reklame": fields.String,
         "judul_reklame": fields.String,
         "tipe_reklame": fields.String,
@@ -55,7 +55,7 @@ class ObjekPajak(db.Model):
     }
 
     def __init__(self, payer_id, nopd, nama_reklame, judul_reklame, tipe_reklame, jenis_reklame,
-                foto, panjang, tinggi, lebar, jumlah, tanggal_pemasangan, tanggal_pembongkaran, masa_pajak,
+                foto, panjang, lebar, tinggi, jumlah, tanggal_pemasangan, tanggal_pembongkaran, masa_pajak,
                 longitude, latitude, lokasi):
         self.payer_id = payer_id
         self.nopd = nopd
