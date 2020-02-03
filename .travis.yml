@@ -7,6 +7,9 @@ env:
   global:
   - DOCKER_IMAGE_NAME="epajak-reklame"
   - DOCKER_HUB_ORG="setyoramdhoni07"
+branches:
+  only:
+  - release
 before_install:
 - openssl aes-256-cbc -K $encrypted_c322a77f8368_key -iv $encrypted_c322a77f8368_iv -in deploy_rsa.enc -out deploy_rsa -d
 - eval "$(ssh-agent -s)"
