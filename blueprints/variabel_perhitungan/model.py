@@ -1,6 +1,11 @@
 from blueprints import db
 from flask_restful import fields
 from datetime import datetime
+from flask import Blueprint
+from flask_restful import Api
+
+blueprint_variabel_perhitungan = Blueprint("variabel_perhitungan", __name__)
+api = Api(blueprint_variabel_perhitungan)
 
 # Model database variabel perhitungan untuk keperluan perhitungan total biaya pajak
 class VariabelPerhitungan(db.Model):
