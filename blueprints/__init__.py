@@ -23,7 +23,7 @@ try:
     if env == 'testing':
         app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:@127.0.0.1:3306/rest_projek_reklame_test'
     else:
-        app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:@127.0.0.1:3306/rest_projek_reklame'
+        app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:seshasab072917@rest-portofolio.cmm0q8q3tp0t.ap-southeast-1.rds.amazonaws.com:3306/rest_projek_reklame'
 except Exception as e:
     raise e
 
@@ -93,8 +93,8 @@ from blueprints.auth import blueprint_auth
 from blueprints.daerah.model import blueprint_daerah
 from blueprints.objek_pajak.model import blueprint_objek_pajak
 from blueprints.laporan.model import blueprint_laporan
-from blueprints.bukti_pembayaran.model import blueprint_bukti_pembayaran
-from blueprints.kode_qr.model import blueprint_kode_qr
+from blueprints.bukti_pembayaran.resources import blueprint_bukti_pembayaran
+from blueprints.kode_qr.resources import blueprint_kode_qr
 from blueprints.variabel_perhitungan.model import blueprint_variabel_perhitungan
 from blueprints.officer.resources import blueprint_officer
 from blueprints.payer.resources import blueprint_payer
@@ -102,5 +102,7 @@ from blueprints.payer.resources import blueprint_payer
 app.register_blueprint(blueprint_auth, url_prefix="/login")
 app.register_blueprint(blueprint_officer, url_prefix="/officers")
 app.register_blueprint(blueprint_payer, url_prefix="/payers")
+app.register_blueprint(blueprint_kode_qr, url_prefix="/kode_qr")
+app.register_blueprint(blueprint_bukti_pembayaran, url_prefix="/bukti_pembayaran")
 
 db.create_all()

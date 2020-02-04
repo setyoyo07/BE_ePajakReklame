@@ -4,9 +4,6 @@ from datetime import datetime
 from flask import Blueprint
 from flask_restful import Api
 
-blueprint_kode_qr = Blueprint("kode-qr", __name__)
-api = Api(blueprint_kode_qr)
-
 # model database kode QR
 class KodeQR(db.Model):
     __tablename__ = "kode_QR"
