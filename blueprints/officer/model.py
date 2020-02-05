@@ -15,10 +15,8 @@ class Officer(db.Model):
     response_fields = {
         "id": fields.Integer,
         "nip": fields.String,
-        "pin": fields.String,
         "nama": fields.String,
         "role": fields.String,
-        "daerah_id": fields.Integer,
     }
 
     jwt_claim_fields = {
