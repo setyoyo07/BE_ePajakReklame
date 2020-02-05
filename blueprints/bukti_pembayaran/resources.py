@@ -176,7 +176,6 @@ class SurveyorBuktiPembayaranResource(Resource):
             db.session.commit()
             return marshal(bukti_pembayaran, BuktiPembayaran.response_fields), 200, {'Content-Type': 'application/json'}
 
-api.add_resource(OfficerBuktiPembayaranList, '/officer')
 api.add_resource(OfficerBuktiPembayaranResource, '/officer', '/officer/<int:id>')
 api.add_resource(SurveyorBuktiPembayaranList, '/surveyor')
 api.add_resource(SurveyorBuktiPembayaranResource, '/surveyor', '/surveyor/<int:id>')
