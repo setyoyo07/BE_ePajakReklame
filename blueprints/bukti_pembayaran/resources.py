@@ -91,4 +91,92 @@ class OfficerBuktiPembayaranResource(Resource):
         
         return list_result, 200, {'Content-Type': 'application/json'}
 
-api.add_resource(OfficerBuktiPembayaranResource, '/officer')
+# Resources model BuktiPembayaran untuk Surveyor
+class SurveyorBuktiPembayaranList(Resource):
+    # fungsi untuk handle CORS
+    def options(self, id=None):
+        return 200
+    
+    #fungsi untuk mendapatkan data list bukti_pembayaran, lokasi reklame, status scan
+    @jwt_required
+    @surveyor_required
+    def get(self):
+        verify_jwt_in_request()
+        officer_claims_data = get_jwt_claims()
+        daerah_id_officer = officer_claims_data["daerah_id"]
+        bukti_pembayaran = BuktiPembayaran.query
+        bukti_pembayaran = bukti_pembayaran.filter_by(status_buat_kode_qr=True).all()
+        list_result = []
+        for bukti_pembayaran_satuan in bukti_pembayaran:
+            if bukti_pembayaran_satuan.daerah_id == daerah_id_officer:
+                laporan = Laporan.query.get(bukti_pembayaran_satuan.laporan_id)
+                objek_pajak = ObjekPajak.query.get(laporan.objek_pajak_id)
+                kode_QR = KodeQR.query.filter_by(bukti_pembayaran_id=bukti_pembayaran_satuan.id)
+                kode_QR_scan = 0
+                for kode_QR_satuan in kode_QR.all():
+                    if kode_QR_satuan.status_scan == True:
+                        kode_QR_scan+=1
+                if kode_QR_scan == 0:
+                    status_scan = "Belum Valid"
+                elif kode_QR_scan == bukti_pembayaran_satuan.jumlah_reklame:
+                    status_scan = "Sudah Valid"
+                else :
+                    status_scan = "Menuju Valid"
+                list_result.append({"bukti_pembayaran":marshal(bukti_pembayaran_satuan, BuktiPembayaran.response_fields),
+                                    "objek_pajak":marshal(objek_pajak, ObjekPajak.response_fields),
+                                    "status_scan": status_scan})
+        
+        return list_result, 200, {'Content-Type': 'application/json'}
+
+# Resources model BuktiPembayaran untuk Surveyor spesifik by ID
+class SurveyorBuktiPembayaranResource(Resource):
+    # fungsi untuk handle CORS
+    def options(self, id=None):
+        return 200
+    
+    #fungsi untuk mendapatkan data detail bukti_pembayaran dan objek pajak
+    @jwt_required
+    @surveyor_required
+    def get(self, id=None):
+        verify_jwt_in_request()
+        officer_claims_data = get_jwt_claims()
+        officer = Officer.query.get(officer_claims_data["id"])
+        daerah_id_officer = officer.daerah_id
+
+        bukti_pembayaran = BuktiPembayaran.query.get(id)
+        if bukti_pembayaran.daerah_id == daerah_id_officer:
+            laporan = Laporan.query.get(bukti_pembayaran.laporan_id)
+            objek_pajak = ObjekPajak.query.get(laporan.objek_pajak_id)
+            kode_QR = KodeQR.query.filter_by(bukti_pembayaran_id=bukti_pembayaran.id)
+            kode_QR_scan = 0
+            for kode_QR_satuan in kode_QR.all():
+                if kode_QR_satuan.status_scan == True:
+                    kode_QR_scan+=1
+            result = {"bukti_pembayaran":marshal(bukti_pembayaran, BuktiPembayaran.response_fields),
+                    "objek_pajak":marshal(objek_pajak, ObjekPajak.response_fields),
+                    "kode_QR_terscan": kode_QR_scan}
+        
+        return result, 200, {'Content-Type': 'application/json'}
+
+    #fungsi untuk mengubah data pelanggaran pajak reklame oleh surveyor
+    @jwt_required
+    @surveyor_required
+    def put(self):
+        verify_jwt_in_request()
+        officer_claims_data = get_jwt_claims()
+        parser = reqparse.RequestParser()
+        parser.add_argument("bukti_pembayaran_id",type=int, location="json")
+        parser.add_argument("pelanggaran", location="json")
+        args = parser.parse_args()
+        bukti_pembayaran = BuktiPembayaran.query.get(args["bukti_pembayaran_id"])
+        if bukti_pembayaran is None:
+            return {'message':'Data Not Found'}, 404
+        if args["pelanggaran"] is not None:
+            bukti_pembayaran.pelanggaran = args["pelanggaran"] + " (Surveyor: " + officer_claims_data["nama"] + ")"
+            db.session.commit()
+            return marshal(bukti_pembayaran, BuktiPembayaran.response_fields), 200, {'Content-Type': 'application/json'}
+
+api.add_resource(OfficerBuktiPembayaranList, '/officer')
+api.add_resource(OfficerBuktiPembayaranResource, '/officer', '/officer/<int:id>')
+api.add_resource(SurveyorBuktiPembayaranList, '/surveyor')
+api.add_resource(SurveyorBuktiPembayaranResource, '/surveyor', '/surveyor/<int:id>')
