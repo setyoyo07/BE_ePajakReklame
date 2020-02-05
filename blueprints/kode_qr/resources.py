@@ -36,21 +36,24 @@ class OfficerKodeQRResource(Resource):
         bukti_pembayaran_id = args['bukti_pembayaran_id']
         bukti_pembayaran = BuktiPembayaran.query.get(bukti_pembayaran_id)
         if bukti_pembayaran is None:
-            return {'status':'bukti_pembayaran_id not found'}, 404
-
+            return {'message':'bukti_pembayaran_id tidak ditemukan'}, 404
+        if bukti_pembayaran.status_buat_kode_qr:
+            return {'message':'kode QR sudah di generate'}
         jumlah_kodeQR = bukti_pembayaran.jumlah_reklame
         nomor_sspd = bukti_pembayaran.nomor_sspd
         
         list_kode_QR = []
         for indeks in range(jumlah_kodeQR):
-            kode_unik = "{nomor_sspd}{indeks}kodeunik".format(nomor_sspd=nomor_sspd, indeks=indeks)
+            kode_unik = "alterratax{nomor_sspd}{indeks}".format(nomor_sspd=nomor_sspd, indeks=indeks)
             link_gambar = "https://api.qrserver.com/v1/create-qr-code/?size=150x150&data={kode_unik}".format(kode_unik=kode_unik)
             kode_QR = KodeQR(bukti_pembayaran_id, kode_unik, link_gambar)
             db.session.add(kode_QR)
             db.session.commit()
             app.logger.debug('DEBUG : %s', kode_QR)
             list_kode_QR.append(marshal(kode_QR, KodeQR.response_fields))
-        
+        bukti_pembayaran.status_buat_kode_qr = True
+        db.session.commit()
+
         return list_kode_QR, 200, {'Content-Type': 'application/json'}
 
 class OfficerKodeQRList(Resource):
@@ -66,12 +69,17 @@ class OfficerKodeQRList(Resource):
         parser.add_argument('p', type=int, location='args', default=1)
         parser.add_argument('rp', type=int, location='args', default=20)
         parser.add_argument('bukti_pembayaran_id', location='args', help='invalid filterby bukti_pembayaran_id')
+        parser.add_argument('kode_QR_id', location='args', help='invalid filterby kode_QR_id')
         args = parser.parse_args()
         offset = (args['p'] * args['rp']) - args['rp']
         kode_QR = KodeQR.query
 
         if args['bukti_pembayaran_id'] is not None:
             kode_QR = kode_QR.filter_by(bukti_pembayaran_id=args['bukti_pembayaran_id'])
+        
+        if args['kode_QR_id'] is not None:
+            kode_QR = kode_QR.filter(KodeQR.id.like('%' + args['kode_QR_id'] + '%'))
+
         list_kode_QR = []
         for kode_QR_satuan in kode_QR.limit(args['rp']).offset(offset).all():
             list_kode_QR.append(marshal(kode_QR_satuan, KodeQR.response_fields))

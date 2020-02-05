@@ -33,7 +33,7 @@ class CreateTokenResources(Resource):
                 user_claims_data = marshal(user_claims_data, Officer.jwt_claim_fields)
                 token = create_access_token(identity=user_claims_data['nip'], user_claims=user_claims_data)
                 user_claims_data['token'] = token
-                return {"token": token, "message": "Token is successfully created"}, 200, {"Content-Type": "application/json"}
+                return {"token": token, "role":user_claims_data['role'], "message": "Token is successfully created"}, 200, {"Content-Type": "application/json"}
         # jika yang login adalah payer
         else:
             list_payer = Payer.query.filter_by(npwpd=args['npwpd']).filter_by(pin=pin_hashlib)
@@ -43,7 +43,7 @@ class CreateTokenResources(Resource):
             if user_claims_data['npwpd'] != None:
                 token = create_access_token(identity=user_claims_data['npwpd'], user_claims=user_claims_data)
                 user_claims_data['token'] = token
-                return {"token": token, "message": "Token is successfully created"}, 200, {"Content-Type": "application/json"}
+                return {"token": token, "role":user_claims_data['role'], "message": "Token is successfully created"}, 200, {"Content-Type": "application/json"}
             else:
                 return {'message': 'NPWPD not match'}, 404
 
