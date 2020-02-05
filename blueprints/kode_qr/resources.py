@@ -83,5 +83,29 @@ class OfficerKodeQRList(Resource):
                 "pelanggaran": bukti_pembayaran.pelanggaran,
                 "nama_reklame": objek_pajak.nama_reklame}, 200, {'Content-Type': 'application/json'}
 
+#resources model kodeQR untuk surveyor 
+class SurveyorKodeQRResource(Resource):
+    # fungsi untuk handle CORS
+    def options(self, id=None):
+        return 200
+
+    #fungsi untuk mengubah status kode qr yang sudah discan
+    @jwt_required
+    @surveyor_required
+    def put(self):
+        parser = reqparse.RequestParser()
+        parser.add_argument('kode_unik', type=str, location='json', default='')
+        args = parser.parse_args()
+        kode_QR = KodeQR.query.filter_by(kode_unik=args["kode_unik"]).first()
+        if kode_QR is None:
+            return {'message':'Kode QR tidak valid'}, 404
+        if kode_QR.status_scan:
+            return {'message':'Kode QR sudah terscan'}, 400
+        kode_QR.status_scan = True
+        db.session.commit()
+
+        return {"bukti_pembayaran_id":kode_QR.bukti_pembayaran_id, "status_scan":kode_QR.status_scan}, 200, {'Content-Type': 'application/json'}
+
 api.add_resource(OfficerKodeQRList, '/officer')
 api.add_resource(OfficerKodeQRResource, '/officer', '/officer/<int:id>')
+api.add_resource(SurveyorKodeQRResource, '/surveyor')
