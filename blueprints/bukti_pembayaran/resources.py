@@ -91,12 +91,43 @@ class OfficerBuktiPembayaranResource(Resource):
         
         return list_result, 200, {'Content-Type': 'application/json'}
 
+# class model bukti pembayaran untuk payer
+class PayerBuktiPembayaranResource(Resource):
+    # fungsi untuk handle CORS
+    def options(self, id=None):
+        return 200
+    
+    #fungsi untuk mendapatkan data bukti_pembayaran oleh payer berdasarkan id-nya
+    @jwt_required
+    @payer_required
+    def get(self, id=None):
+        verify_jwt_in_request()
+        payer_claims_data = get_jwt_claims()
+        payer = Payer.query.get(payer_claims_data["id"])
+        bukti_pembayaran = BuktiPembayaran.query.filter_by(laporan_id=id).first()
+        if bukti_pembayaran is None:
+            return {"message":"Data bukti pembayaran tidak ditemukan"}
+
+        laporan = Laporan.query.get(bukti_pembayaran.laporan_id)
+        objek_pajak = ObjekPajak.query.get(laporan.objek_pajak_id)
+        if objek_pajak.payer_id != payer.id :
+            return {"message":"Permission denied"}, 403
+
+        hasil = {
+            "bukti_pembayaran": marshal(bukti_pembayaran, BuktiPembayaran.response_fields),
+            "objek_pajak": marshal(objek_pajak, ObjekPajak.response_fields),
+            "laporan": marshal(laporan, Laporan.response_fields),
+            "payer": marshal(payer, Payer.response_fields)
+        }
+        
+        return hasil, 200, {'Content-Type': 'application/json'}
+
 # Resources model BuktiPembayaran untuk Surveyor
 class SurveyorBuktiPembayaranList(Resource):
     # fungsi untuk handle CORS
     def options(self, id=None):
         return 200
-    
+
     #fungsi untuk mendapatkan data list bukti_pembayaran, lokasi reklame, status scan
     @jwt_required
     @surveyor_required
@@ -176,6 +207,8 @@ class SurveyorBuktiPembayaranResource(Resource):
             db.session.commit()
             return marshal(bukti_pembayaran, BuktiPembayaran.response_fields), 200, {'Content-Type': 'application/json'}
 
-api.add_resource(OfficerBuktiPembayaranResource, '/officer', '/officer/<int:id>')
 api.add_resource(SurveyorBuktiPembayaranList, '/surveyor')
 api.add_resource(SurveyorBuktiPembayaranResource, '/surveyor', '/surveyor/<int:id>')
+api.add_resource(OfficerBuktiPembayaranList, '/officer')
+api.add_resource(OfficerBuktiPembayaranResource, '/officer', '/officer/<int:id>')
+api.add_resource(PayerBuktiPembayaranResource, '/payer/<int:id>')
