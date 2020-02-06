@@ -209,6 +209,5 @@ class SurveyorBuktiPembayaranResource(Resource):
 
 api.add_resource(SurveyorBuktiPembayaranList, '/surveyor')
 api.add_resource(SurveyorBuktiPembayaranResource, '/surveyor', '/surveyor/<int:id>')
-api.add_resource(OfficerBuktiPembayaranList, '/officer')
 api.add_resource(OfficerBuktiPembayaranResource, '/officer', '/officer/<int:id>')
 api.add_resource(PayerBuktiPembayaranResource, '/payer/<int:id>')

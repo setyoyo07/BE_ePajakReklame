@@ -7,6 +7,7 @@ from blueprints.bukti_pembayaran.model import *
 from blueprints.laporan.model import *
 from blueprints.objek_pajak.model import *
 from blueprints.payer.model import Payer
+import random
 
 blueprint_kode_qr = Blueprint("kode_QR", __name__)
 api = Api(blueprint_kode_qr)
@@ -45,7 +46,7 @@ class OfficerKodeQRResource(Resource):
         
         list_kode_QR = []
         for indeks in range(jumlah_kodeQR):
-            kode_unik = "alterratax{nomor_sspd}{indeks}".format(nomor_sspd=nomor_sspd, indeks=indeks)
+            kode_unik = "alterratax{nomor_sspd}{indeks}".format(nomor_sspd=nomor_sspd, indeks=indeks)+"".join(random.choice(string.ascii_letters) for i in range(10))
             link_gambar = "https://api.qrserver.com/v1/create-qr-code/?size=150x150&data={kode_unik}".format(kode_unik=kode_unik)
             kode_QR = KodeQR(bukti_pembayaran_id, kode_unik, link_gambar)
             db.session.add(kode_QR)
@@ -207,7 +208,7 @@ class SurveyorKodeQRResource(Resource):
         if kode_QR is None:
             return {'message':'Kode QR tidak valid'}, 200, {'Content-Type': 'application/json'}
         if kode_QR.status_scan:
-            return {'message':'Kode QR sudah terscan'}, 200, {'Content-Type': 'application/json'}
+            return {'message':'Kode QR sudah terscan', "bukti_pembayaran_id":kode_QR.bukti_pembayaran_id}, 200, {'Content-Type': 'application/json'}
         kode_QR.status_scan = True
         db.session.commit()
 
