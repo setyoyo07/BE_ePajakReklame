@@ -15,9 +15,7 @@ class Payer(db.Model):
     response_fields = {
         "id": fields.Integer,
         "npwpd": fields.String,
-        "pin": fields.String,
         "nama": fields.String,
-        "daerah_id": fields.Integer,
     }
 
     jwt_claim_fields = {
