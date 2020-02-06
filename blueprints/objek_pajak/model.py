@@ -1,6 +1,11 @@
 from blueprints import db
 from flask_restful import fields
 from datetime import datetime
+from flask import Blueprint
+from flask_restful import Api
+
+blueprint_objek_pajak = Blueprint("objek_pajak", __name__)
+api = Api(blueprint_objek_pajak)
 
 #model database objek_pajak
 class ObjekPajak(db.Model):
