@@ -106,9 +106,9 @@ class SurveyorKodeQRResource(Resource):
         args = parser.parse_args()
         kode_QR = KodeQR.query.filter_by(kode_unik=args["kode_unik"]).first()
         if kode_QR is None:
-            return {'message':'Kode QR tidak valid'}, 404
+            return {'message':'Kode QR tidak valid'}, 200, {'Content-Type': 'application/json'}
         if kode_QR.status_scan:
-            return {'message':'Kode QR sudah terscan'}, 400
+            return {'message':'Kode QR sudah terscan'}, 200, {'Content-Type': 'application/json'}
         kode_QR.status_scan = True
         db.session.commit()
 
