@@ -12,7 +12,7 @@ import random, string
 blueprint_kode_qr = Blueprint("kode_QR", __name__)
 api = Api(blueprint_kode_qr)
 
-#resource model kode_qr oleh officer
+#resource model kode_qr oleh officer spesifik berdasarkan id nya
 class OfficerKodeQRResource(Resource):
     # fungsi untuk handle CORS
     def options(self, id=None):
@@ -58,6 +58,7 @@ class OfficerKodeQRResource(Resource):
 
         return list_kode_QR, 200, {'Content-Type': 'application/json'}
 
+#class model kode qr untuk officer
 class OfficerKodeQRList(Resource):
     # fungsi untuk handle CORS
     def options(self, id=None):
