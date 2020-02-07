@@ -91,7 +91,6 @@ class OfficerBuktiPembayaranResource(Resource):
         
         return list_result, 200, {'Content-Type': 'application/json'}
 
-<<<<<<< HEAD
 # class model bukti pembayaran untuk payer
 class PayerBuktiPembayaranResource(Resource):
     # fungsi untuk handle CORS
@@ -213,7 +212,3 @@ api.add_resource(SurveyorBuktiPembayaranList, '/surveyor')
 api.add_resource(SurveyorBuktiPembayaranResource, '/surveyor', '/surveyor/<int:id>')
 api.add_resource(OfficerBuktiPembayaranResource, '/officer', '/officer/<int:id>')
 api.add_resource(PayerBuktiPembayaranResource, '/payer/<int:id>')
-=======
-api.add_resource(OfficerBuktiPembayaranList, '/officer')
-api.add_resource(OfficerBuktiPembayaranResource, '/officer', '/officer/<int:id>')
->>>>>>> 7b95306b89bd1d5a2ba47287a0e31b53334cf3d6
