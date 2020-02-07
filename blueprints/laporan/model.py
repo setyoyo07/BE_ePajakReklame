@@ -1,11 +1,6 @@
 from blueprints import db
 from flask_restful import fields
 from datetime import datetime
-from flask import Blueprint
-from flask_restful import Api
-
-blueprint_laporan = Blueprint("laporan", __name__)
-api = Api(blueprint_laporan)
 
 # Model database laporan pajak reklame
 class Laporan(db.Model):

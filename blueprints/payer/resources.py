@@ -3,6 +3,7 @@ from flask import Blueprint
 from flask_jwt_extended import jwt_required, get_jwt_claims
 from blueprints import db, payer_required
 from blueprints.payer.model import Payer
+from blueprints.daerah.model import Daerah
 
 blueprint_payer = Blueprint("payer", __name__)
 api_payer = Api(blueprint_payer)
@@ -19,6 +20,9 @@ class PayerResources(Resource):
     def get(self): 
         data_claims = get_jwt_claims()
         payer = Payer.query.get(data_claims["id"])
-        return [marshal(payer, Payer.response_fields)], 200, {"Content-Type": "application/json"}
+        daerah = Daerah.query.get(payer.daerah_id).first()
+        marshalPayer = marshal(payer, Payer.response_fields)
+        marshalPayer["nama_daerah"] = daerah.nama 
+        return [marshalPayer], 200, {"Content-Type": "application/json"}
 
 api_payer.add_resource(PayerResources, "")
