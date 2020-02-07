@@ -3,6 +3,7 @@ from flask import Blueprint
 from flask_jwt_extended import jwt_required, get_jwt_claims
 from blueprints import db, officer_required, surveyor_required
 from blueprints.officer.model import Officer
+from blueprints.daerah.model import Daerah
 
 blueprint_officer = Blueprint("officer", __name__)
 api_officer = Api(blueprint_officer)
@@ -19,7 +20,10 @@ class OfficerResources(Resource):
     def get(self): 
         data_claims = get_jwt_claims()
         officer = Officer.query.get(data_claims["id"])
-        return [marshal(officer, Officer.response_fields)], 200, {"Content-Type": "application/json"}
+        daerah = Daerah.query.get(officer.daerah_id)
+        marshalOfficer = marshal(officer, Officer.response_fields)
+        marshalOfficer["nama_daerah"] = daerah.nama
+        return [marshalOfficer], 200, {"Content-Type": "application/json"}
 
 #Resource model database officer untuk mengambil data surveyor
 class SurveyorResources(Resource):
@@ -33,7 +37,10 @@ class SurveyorResources(Resource):
     def get(self): 
         data_claims = get_jwt_claims()
         officer = Officer.query.get(data_claims["id"])
-        return [marshal(officer, Officer.response_fields)], 200, {"Content-Type": "application/json"}
+        daerah = Daerah.query.get(officer.daerah_id)
+        marshalOfficer = marshal(officer, Officer.response_fields)
+        marshalOfficer["nama_daerah"] = daerah.nama
+        return [marshalOfficer], 200, {"Content-Type": "application/json"}
 
 api_officer.add_resource(OfficerResources, "")
 api_officer.add_resource(SurveyorResources, "/surveyor")
