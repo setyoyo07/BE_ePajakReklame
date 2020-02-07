@@ -72,7 +72,7 @@ class OfficerBuktiPembayaranResource(Resource):
         if args['nomor_sspd'] is not None:
             bukti_pembayaran = bukti_pembayaran.filter(BuktiPembayaran.nomor_sspd.like('%' + args['nomor_sspd'] + '%'))
 
-        bukti_pembayaran = bukti_pembayaran.order_by(desc(BuktiPembayaran.created_at))
+        bukti_pembayaran = bukti_pembayaran.order_by(desc(BuktiPembayaran.id))
         list_result = []
         for bukti_pembayaran_satuan in bukti_pembayaran.limit(args['rp']).offset(offset).all():
             if bukti_pembayaran_satuan.daerah_id == daerah_id_officer:
@@ -140,22 +140,23 @@ class SurveyorBuktiPembayaranList(Resource):
         list_result = []
         for bukti_pembayaran_satuan in bukti_pembayaran:
             if bukti_pembayaran_satuan.daerah_id == daerah_id_officer:
-                laporan = Laporan.query.get(bukti_pembayaran_satuan.laporan_id)
-                objek_pajak = ObjekPajak.query.get(laporan.objek_pajak_id)
-                kode_QR = KodeQR.query.filter_by(bukti_pembayaran_id=bukti_pembayaran_satuan.id)
-                kode_QR_scan = 0
-                for kode_QR_satuan in kode_QR.all():
-                    if kode_QR_satuan.status_scan == True:
-                        kode_QR_scan+=1
-                if kode_QR_scan == 0:
-                    status_scan = "Belum Valid"
-                elif kode_QR_scan == bukti_pembayaran_satuan.jumlah_reklame:
-                    status_scan = "Sudah Valid"
-                else :
-                    status_scan = "Menuju Valid"
-                list_result.append({"bukti_pembayaran":marshal(bukti_pembayaran_satuan, BuktiPembayaran.response_fields),
-                                    "objek_pajak":marshal(objek_pajak, ObjekPajak.response_fields),
-                                    "status_scan": status_scan})
+                if bukti_pembayaran_satuan.laporan_id != 1:
+                    laporan = Laporan.query.get(bukti_pembayaran_satuan.laporan_id)
+                    objek_pajak = ObjekPajak.query.get(laporan.objek_pajak_id)
+                    kode_QR = KodeQR.query.filter_by(bukti_pembayaran_id=bukti_pembayaran_satuan.id)
+                    kode_QR_scan = 0
+                    for kode_QR_satuan in kode_QR.all():
+                        if kode_QR_satuan.status_scan == True:
+                            kode_QR_scan+=1
+                    if kode_QR_scan == 0:
+                        status_scan = "Belum Valid"
+                    elif kode_QR_scan == bukti_pembayaran_satuan.jumlah_reklame:
+                        status_scan = "Sudah Valid"
+                    else :
+                        status_scan = "Menuju Valid"
+                    list_result.append({"bukti_pembayaran":marshal(bukti_pembayaran_satuan, BuktiPembayaran.response_fields),
+                                        "objek_pajak":marshal(objek_pajak, ObjekPajak.response_fields),
+                                        "status_scan": status_scan})
         
         return list_result, 200, {'Content-Type': 'application/json'}
 

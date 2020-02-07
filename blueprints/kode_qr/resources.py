@@ -7,7 +7,7 @@ from blueprints.bukti_pembayaran.model import *
 from blueprints.laporan.model import *
 from blueprints.objek_pajak.model import *
 from blueprints.payer.model import Payer
-import random
+import random, string
 
 blueprint_kode_qr = Blueprint("kode_QR", __name__)
 api = Api(blueprint_kode_qr)

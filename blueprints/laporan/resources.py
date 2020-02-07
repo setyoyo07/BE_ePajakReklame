@@ -23,6 +23,7 @@ class PayerLaporanList(Resource):
         verify_jwt_in_request() 
         payer_claims_data = get_jwt_claims()
         payer = Payer.query.get(payer_claims_data["id"])
+        marshalPayer = marshal(payer, Payer.response_fields)
         laporan = Laporan.query.all()
         
         list_hasil = []
@@ -34,7 +35,7 @@ class PayerLaporanList(Resource):
                     "objek_pajak":marshal(objek_pajak, ObjekPajak.response_fields)
                 })
         
-        return list_hasil, 200, {'Content-Type': 'application/json'}
+        return {"list_laporan":list_hasil, "payer":marshalPayer}, 200, {'Content-Type': 'application/json'}
 
 #Resource model laporan oleh payer spesifik berdasarkan laporan id-nya
 class PayerLaporanResource(Resource):
