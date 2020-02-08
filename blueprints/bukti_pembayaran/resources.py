@@ -86,12 +86,12 @@ class OfficerBuktiPembayaranResource(Resource):
                     if kode_QR_satuan.status_scan == True:
                         kode_QR_scan+=1
                 payer = Payer.query.get(objek_pajak.payer_id)
-                list_result.append({"page":page, "bukti_pembayaran":marshal(bukti_pembayaran_satuan, BuktiPembayaran.response_fields),
+                list_result.append({"bukti_pembayaran":marshal(bukti_pembayaran_satuan, BuktiPembayaran.response_fields),
                                     "objek_pajak":marshal(objek_pajak, ObjekPajak.response_fields),
                                     "payer":payer.nama,
                                     "kode_QR terscan": kode_QR_scan})
         
-        return list_result, 200, {'Content-Type': 'application/json'}
+        return {"page":page, "list_bukti_pembayaran":list_result}, 200, {'Content-Type': 'application/json'}
 
 # class model bukti pembayaran untuk payer
 class PayerBuktiPembayaranResource(Resource):
@@ -158,7 +158,8 @@ class SurveyorBuktiPembayaranList(Resource):
                         status_scan = "Menuju Valid"
                     list_result.append({"bukti_pembayaran":marshal(bukti_pembayaran_satuan, BuktiPembayaran.response_fields),
                                         "objek_pajak":marshal(objek_pajak, ObjekPajak.response_fields),
-                                        "status_scan": status_scan})
+                                        "status_scan": status_scan,
+                                        "kodeQR_terscan": kode_QR_scan})
         
         return list_result, 200, {'Content-Type': 'application/json'}
 
