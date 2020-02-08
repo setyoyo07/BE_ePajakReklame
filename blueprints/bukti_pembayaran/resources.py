@@ -69,6 +69,8 @@ class OfficerBuktiPembayaranResource(Resource):
         offset = (args['p'] * args['rp']) - args['rp']
         bukti_pembayaran = BuktiPembayaran.query
 
+        page = args["p"]
+
         if args['nomor_sspd'] is not None:
             bukti_pembayaran = bukti_pembayaran.filter(BuktiPembayaran.nomor_sspd.like('%' + args['nomor_sspd'] + '%'))
 
@@ -84,7 +86,7 @@ class OfficerBuktiPembayaranResource(Resource):
                     if kode_QR_satuan.status_scan == True:
                         kode_QR_scan+=1
                 payer = Payer.query.get(objek_pajak.payer_id)
-                list_result.append({"bukti_pembayaran":marshal(bukti_pembayaran_satuan, BuktiPembayaran.response_fields),
+                list_result.append({"page":page, "bukti_pembayaran":marshal(bukti_pembayaran_satuan, BuktiPembayaran.response_fields),
                                     "objek_pajak":marshal(objek_pajak, ObjekPajak.response_fields),
                                     "payer":payer.nama,
                                     "kode_QR terscan": kode_QR_scan})
