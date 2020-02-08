@@ -70,13 +70,13 @@ class OfficerBuktiPembayaranResource(Resource):
         bukti_pembayaran = BuktiPembayaran.query
 
         page = args["p"]
-        rowpage = args["rp"]
+        row_page = args["rp"]
 
         if args['nomor_sspd'] is not None:
             bukti_pembayaran = bukti_pembayaran.filter(BuktiPembayaran.nomor_sspd.like('%' + args['nomor_sspd'] + '%'))
 
         bukti_pembayaran = bukti_pembayaran.order_by(desc(BuktiPembayaran.id))
-        list_result = []
+        list_bukti_pembayaran = []
         for bukti_pembayaran_satuan in bukti_pembayaran.limit(args['rp']).offset(offset).all():
             if bukti_pembayaran_satuan.daerah_id == daerah_id_officer:
                 laporan = Laporan.query.get(bukti_pembayaran_satuan.laporan_id)
@@ -87,12 +87,30 @@ class OfficerBuktiPembayaranResource(Resource):
                     if kode_QR_satuan.status_scan == True:
                         kode_QR_scan+=1
                 payer = Payer.query.get(objek_pajak.payer_id)
-                list_result.append({"bukti_pembayaran":marshal(bukti_pembayaran_satuan, BuktiPembayaran.response_fields),
+                list_bukti_pembayaran.append({"bukti_pembayaran":marshal(bukti_pembayaran_satuan, BuktiPembayaran.response_fields),
                                     "objek_pajak":marshal(objek_pajak, ObjekPajak.response_fields),
                                     "payer":payer.nama,
                                     "kode_QR terscan": kode_QR_scan})
-        
-        return {"page":page, "rowpage":rowpage, "list_bukti_pembayaran":list_result}, 200, {'Content-Type': 'application/json'}
+        list_semua_bukti_pembayaran = []
+        for bukti_pembayaran_satuan in bukti_pembayaran.all():
+            if bukti_pembayaran_satuan.daerah_id == daerah_id_officer:
+                laporan = Laporan.query.get(bukti_pembayaran_satuan.laporan_id)
+                objek_pajak = ObjekPajak.query.get(laporan.objek_pajak_id)
+                kode_QR = KodeQR.query.filter_by(bukti_pembayaran_id=bukti_pembayaran_satuan.id)
+                kode_QR_scan = 0
+                for kode_QR_satuan in kode_QR.all():
+                    if kode_QR_satuan.status_scan == True:
+                        kode_QR_scan+=1
+                payer = Payer.query.get(objek_pajak.payer_id)
+                list_semua_bukti_pembayaran.append({"bukti_pembayaran":marshal(bukti_pembayaran_satuan, BuktiPembayaran.response_fields),
+                                    "objek_pajak":marshal(objek_pajak, ObjekPajak.response_fields),
+                                    "payer":payer.nama,
+                                    "kode_QR terscan": kode_QR_scan})
+        jumlah_bukti_pembayaran = len(list_semua_bukti_pembayaran)
+        maks_page = 1 + ((jumlah_bukti_pembayaran-1) // row_page)
+
+        return {"page":page, "row_page":row_page, "maks_page":maks_page,
+            "list_bukti_pembayaran":list_bukti_pembayaran}, 200, {'Content-Type': 'application/json'}
 
 # class model bukti pembayaran untuk payer
 class PayerBuktiPembayaranResource(Resource):
