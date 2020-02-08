@@ -69,6 +69,9 @@ class OfficerBuktiPembayaranResource(Resource):
         offset = (args['p'] * args['rp']) - args['rp']
         bukti_pembayaran = BuktiPembayaran.query
 
+        page = args["p"]
+        rowpage = args["rp"]
+
         if args['nomor_sspd'] is not None:
             bukti_pembayaran = bukti_pembayaran.filter(BuktiPembayaran.nomor_sspd.like('%' + args['nomor_sspd'] + '%'))
 
@@ -89,7 +92,7 @@ class OfficerBuktiPembayaranResource(Resource):
                                     "payer":payer.nama,
                                     "kode_QR terscan": kode_QR_scan})
         
-        return list_result, 200, {'Content-Type': 'application/json'}
+        return {"page":page, "rowpage":rowpage, "list_bukti_pembayaran":list_result}, 200, {'Content-Type': 'application/json'}
 
 # class model bukti pembayaran untuk payer
 class PayerBuktiPembayaranResource(Resource):
@@ -156,7 +159,8 @@ class SurveyorBuktiPembayaranList(Resource):
                         status_scan = "Menuju Valid"
                     list_result.append({"bukti_pembayaran":marshal(bukti_pembayaran_satuan, BuktiPembayaran.response_fields),
                                         "objek_pajak":marshal(objek_pajak, ObjekPajak.response_fields),
-                                        "status_scan": status_scan})
+                                        "status_scan": status_scan,
+                                        "kodeQR_terscan": kode_QR_scan})
         
         return list_result, 200, {'Content-Type': 'application/json'}
 

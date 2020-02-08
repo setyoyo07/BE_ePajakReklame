@@ -77,6 +77,9 @@ class OfficerKodeQRList(Resource):
         offset = (args['p'] * args['rp']) - args['rp']
         kode_QR = KodeQR.query
 
+        page = args["p"]
+        rowpage = args["rp"]
+
         if args['bukti_pembayaran_id'] is not None:
             kode_QR = kode_QR.filter_by(bukti_pembayaran_id=args['bukti_pembayaran_id'])
         
@@ -90,7 +93,8 @@ class OfficerKodeQRList(Resource):
         bukti_pembayaran = BuktiPembayaran.query.get(args["bukti_pembayaran_id"])
         laporan = Laporan.query.get(bukti_pembayaran.laporan_id)
         objek_pajak = ObjekPajak.query.get(laporan.objek_pajak_id)
-        return {"list_kode_qr": list_kode_QR, "nomor_sspd": bukti_pembayaran.nomor_sspd,
+        return {"page":page, "rowpage": rowpage,
+                "list_kode_qr": list_kode_QR, "nomor_sspd": bukti_pembayaran.nomor_sspd,
                 "pelanggaran": bukti_pembayaran.pelanggaran,
                 "nama_reklame": objek_pajak.nama_reklame}, 200, {'Content-Type': 'application/json'}
 
@@ -118,6 +122,9 @@ class PayerKodeQRList(Resource):
         offset = (args['p'] * args['rp']) - args['rp']
         kode_QR = KodeQR.query
 
+        page = args["p"]
+        rowpage = args["rp"]
+
         if args['bukti_pembayaran_id'] is not None:
             kode_QR = kode_QR.filter_by(bukti_pembayaran_id=args['bukti_pembayaran_id'])
         if args['kode_QR_id'] is not None:
@@ -133,7 +140,8 @@ class PayerKodeQRList(Resource):
                 list_kode_QR.append(marshal(kode_QR_satuan, KodeQR.response_fields))
 
         if objek_pajak.payer_id == id_payer:
-            return {"list_kode_qr": list_kode_QR, "nomor_sspd": bukti_pembayaran.nomor_sspd,
+            return {"page":page, "rowpage":rowpage,
+                "list_kode_qr": list_kode_QR, "nomor_sspd": bukti_pembayaran.nomor_sspd,
                 "pelanggaran": bukti_pembayaran.pelanggaran,
                 "nama_reklame": objek_pajak.nama_reklame}, 200, {'Content-Type': 'application/json'}
         return {"status": "Bukti pembayaran tidak valid"}, 200, {'Content-Type': 'application/json'}
