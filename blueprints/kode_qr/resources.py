@@ -99,6 +99,7 @@ class OfficerKodeQRList(Resource):
         bukti_pembayaran = BuktiPembayaran.query.get(args["bukti_pembayaran_id"])
         laporan = Laporan.query.get(bukti_pembayaran.laporan_id)
         objek_pajak = ObjekPajak.query.get(laporan.objek_pajak_id)
+
         return {"page":page, "row_page": row_page, "maks_page":maks_page,
                 "list_kode_qr": list_kode_QR, "nomor_sspd": bukti_pembayaran.nomor_sspd,
                 "pelanggaran": bukti_pembayaran.pelanggaran,
@@ -154,6 +155,7 @@ class PayerKodeQRList(Resource):
         maks_page = 1 + ((jumlah_kode_qr-1) // row_page)
 
         if objek_pajak.payer_id == id_payer:
+
             return {"page":page, "row_page":row_page, "maks_page":maks_page,
                 "list_kode_qr": list_kode_QR, "nomor_sspd": bukti_pembayaran.nomor_sspd,
                 "pelanggaran": bukti_pembayaran.pelanggaran,

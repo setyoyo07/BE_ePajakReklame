@@ -91,6 +91,7 @@ class OfficerBuktiPembayaranResource(Resource):
                                     "objek_pajak":marshal(objek_pajak, ObjekPajak.response_fields),
                                     "payer":payer.nama,
                                     "kode_QR terscan": kode_QR_scan})
+
         list_semua_bukti_pembayaran = []
         for bukti_pembayaran_satuan in bukti_pembayaran.all():
             if bukti_pembayaran_satuan.daerah_id == daerah_id_officer:
