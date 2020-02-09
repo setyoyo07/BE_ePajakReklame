@@ -11,9 +11,10 @@ api = Api(blueprint_variabel_perhitungan)
 class VariabelPerhitungan(db.Model):
     __tablename__ = "variabel_perhitungan"
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    tarif = db.Column(db.String(255), default='')
-    tipe = db.Column(db.String(255), default='')
-    biaya = db.Column(db.Integer, default=0)
+    nama = db.Column(db.String(255), default='')
+    kata_kunci = db.Column(db.String(255), default='')
+    value = db.Column(db.Integer, default=0)
+    status = db.Column(db.Boolean, default=False)
     created_at = db.Column(db.DateTime, default=datetime.now())
     updated_at = db.Column(db.DateTime, default=datetime.now())
     
@@ -21,15 +22,16 @@ class VariabelPerhitungan(db.Model):
         "created_at": fields.DateTime,
         "updated_at": fields.DateTime,
         "id": fields.Integer,
-        "tarif": fields.String,
-        "tipe": fields.String,
-        "biaya": fields.Integer,
+        "nama": fields.String,
+        "kata_kunci": fields.String,
+        "value": fields.Integer,
+        "status": fields.Boolean,
     }
 
-    def __init__(self, tarif, tipe, biaya):
-        self.tarif = tarif  
-        self.tipe = tipe  
-        self.biaya = biaya
+    def __init__(self, nama, kata_kunci, value):
+        self.nama = nama  
+        self.kata_kunci = kata_kunci  
+        self.value = value
         
     def __repr__(self):
         return "<VariabelPerhitungan %r>" % self.id

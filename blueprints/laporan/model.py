@@ -12,10 +12,18 @@ class Laporan(db.Model):
     __tablename__ = "laporan"
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     objek_pajak_id = db.Column(db.Integer, db.ForeignKey("objek_pajak.id"))
-    tarif_klasifikasi_jalan = db.Column(db.Integer, default=0)
-    tarif_letak_pemasangan = db.Column(db.Integer, default=0)
-    tarif_njopr = db.Column(db.Integer, default=0)
-    tarif_tinggi_tanah = db.Column(db.Integer, default=0)
+    nfj = db.Column(db.Integer, default=0) #nilai fungsi jalan
+    nfr = db.Column(db.Integer, default=0) #nilai fungsi ruang
+    nsp = db.Column(db.Integer, default=0) #nilai sudut pandang
+    hdnspr = db.Column(db.Integer, default=0) #harga dasar nilai strategis pajak reklame
+    nkr = db.Column(db.Integer, default=0) #nilai ketinggian reklame
+    hdkr = db.Column(db.Integer, default=0) #harga dasar ketinggian reklame
+    nlr = db.Column(db.Integer, default=0) #nilai luas reklame
+    hdur = db.Column(db.Integer, default=0) #harga dasar ukuran reklame
+    njopr = db.Column(db.Integer, default=0) #nilai jual objek pajak reklame
+    nspr = db.Column(db.Integer, default=0) #nilai strategis pemasangan reklame
+    nsr = db.Column(db.Integer, default=0) #nilai sewa reklame
+    tarif_pajak = db.Column(db.Integer, default=0)
     total_pajak = db.Column(db.Integer, default=0)
     nomor_skpd = db.Column(db.String(255), default='')
     status_pembayaran = db.Column(db.Boolean, default=False)
@@ -29,10 +37,18 @@ class Laporan(db.Model):
         "updated_at": fields.DateTime,
         "id": fields.Integer,
         "objek_pajak_id": fields.Integer,
-        "tarif_klasifikasi_jalan": fields.Integer,
-        "tarif_letak_pemasangan": fields.Integer,
-        "tarif_njopr": fields.Integer,
-        "tarif_tinggi_tanah": fields.Integer,
+        "nfj": fields.Integer,
+        "nfr": fields.Integer,
+        "nsp": fields.Integer,
+        "hdnspr": fields.Integer,
+        "nkr": fields.Integer,
+        "hdkr": fields.Integer,
+        "nlr": fields.Integer,
+        "hdur": fields.Integer,
+        "njopr": fields.Integer,
+        "nspr": fields.Integer,
+        "nsr": fields.Integer,
+        "tarif_pajak": fields.Integer,
         "total_pajak": fields.Integer,
         "nomor_skpd": fields.String,
         "status_pembayaran": fields.Boolean,
