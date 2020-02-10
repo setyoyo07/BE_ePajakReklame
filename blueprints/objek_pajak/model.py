@@ -15,13 +15,13 @@ class ObjekPajak(db.Model):
     tipe_reklame = db.Column(db.String(255), nullable=False)
     jenis_reklame = db.Column(db.String(255), nullable=False)
     foto = db.Column(db.String(1000), nullable=False)
-    panjang = db.Column(db.Integer, nullable=False)
-    lebar = db.Column(db.Integer, nullable=False)
-    tinggi = db.Column(db.Integer, nullable=False)
+    panjang = db.Column(db.Float, nullable=False)
+    lebar = db.Column(db.Float, nullable=False)
+    tinggi = db.Column(db.Float, nullable=False)
     jumlah = db.Column(db.Integer, nullable=False)
     tanggal_pemasangan = db.Column(db.DateTime)
     tanggal_pembongkaran = db.Column(db.DateTime)
-    masa_pajak = db.Column(db.Integer, nullable=False)
+    masa_pajak = db.Column(db.String(255), nullable=False)
     longitude = db.Column(db.String(255), nullable=False)
     latitude = db.Column(db.String(255), nullable=False)
     lokasi = db.Column(db.String(255), nullable=False)
@@ -43,13 +43,13 @@ class ObjekPajak(db.Model):
         "tipe_reklame": fields.String,
         "jenis_reklame": fields.String,
         "foto": fields.String,
-        "panjang": fields.Integer,
-        "tinggi": fields.Integer,
-        "lebar": fields.Integer,
+        "panjang": fields.Float,
+        "tinggi": fields.Float,
+        "lebar": fields.Float,
         "jumlah": fields.Integer,
         "tanggal_pemasangan": fields.DateTime,
         "tanggal_pembongkaran": fields.DateTime,
-        "masa_pajak": fields.Integer,
+        "masa_pajak": fields.String,
         "longitude": fields.String,
         "latitude": fields.String,
         "lokasi": fields.String,
@@ -70,7 +70,7 @@ class ObjekPajak(db.Model):
         self.payer_id = payer_id
         self.nopd = nopd
         self.nama_reklame = nama_reklame
-        self.judul_reklame = deskripsi
+        self.judul_reklame = judul_reklame
         self.tipe_reklame = tipe_reklame
         self.jenis_reklame = jenis_reklame
         self.foto = foto

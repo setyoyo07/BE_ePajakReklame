@@ -4,7 +4,8 @@ from sqlalchemy import desc
 from blueprints import db, app, payer_required
 from blueprints.payer.model import Payer
 from blueprints.objek_pajak.model import ObjekPajak
-from blueprints.bukti_pembayaran.model import BuktiPembayaran
+from blueprints.laporan.model import Laporan
+from blueprints.variabel_perhitungan.model import VariabelPerhitungan
 from flask_jwt_extended import jwt_required, get_jwt_claims, verify_jwt_in_request
 
 blueprint_objek_pajak = Blueprint("objek_pajak", __name__)
@@ -29,9 +30,9 @@ class ObjekPajakResource(Resource):
         parser.add_argument('tipe_reklame', location='json', required=True)
         parser.add_argument('jenis_reklame', location='json', required=True)
         parser.add_argument('foto', location='json', required=True)
-        parser.add_argument('panjang', type=int, location='json', required=True)
-        parser.add_argument('lebar', type=int, location='json', required=True)
-        parser.add_argument('tinggi', type=int, location='json', required=True)
+        parser.add_argument('panjang', type=float, location='json', required=True)
+        parser.add_argument('lebar', type=float, location='json', required=True)
+        parser.add_argument('tinggi', type=float, location='json', required=True)
         parser.add_argument('jumlah', type=int, location='json', required=True)
         parser.add_argument('muka', type=int, location='json', required=True)
         parser.add_argument('luas', type=int, location='json', required=True)
@@ -51,28 +52,99 @@ class ObjekPajakResource(Resource):
         if get_id is None:
             nopd = "1001"
         else :
-            nopd = str(1000+get_id.id)
+            nopd = str(1000+get_id.id+1)
 
         # menambah data objek pajak baru
-        objek_pajak = BuktiPembayaran(
+        objek_pajak = ObjekPajak(
             payer.id, nopd, args["nama_reklame"], args["judul_reklame"], args["tipe_reklame"],
             args["jenis_reklame"], args["foto"], args["panjang"], args["lebar"], args["tinggi"],
-            args["jumlah"], args["tangal_pemasangan"], args["tanggal-pembongkaran"], args["longitude"],
-            args["masa_pajak"], args["latitude"], args["lokasi"], args["muka"], args['luas'], args["tarif_tambahan"],
+            args["jumlah"], args["tanggal_pemasangan"], args["tanggal_pembongkaran"], args["masa_pajak"],
+            args["longitude"], args["latitude"], args["lokasi"], args["muka"], args['luas'], args["tarif_tambahan"],
             args["letak_pemasangan"], args["klasifikasi_jalan"], args["sudut_pandang"]
             )
         db.session.add(objek_pajak)
         db.session.commit()
         app.logger.debug('DEBUG : %s', objek_pajak)
             
+        variabel_perhitungan = VariabelPerhitungan.query
         #perhitungan total pajak yang harus dibayar oleh payer
-        # nilai luas reklame
-        if args["tipe_reklame"] == "permanen" :
-            if args["luas"] <= 3 :
-                
+        #tarif tambahan
+        TTM = variabel_perhitungan.filter_by(nama = args["tarif_tambahan"]).first()
+        TTM = TTM.nilai
+
+        #nilai ketinggian reklame (NKR)
+        jenis_reklame = variabel_perhitungan.filter_by(nama = args["jenis_reklame"]).first()
+        HDKR = variabel_perhitungan.filter_by(kata_kunci = ("HDKR-"+jenis_reklame.kata_kunci)).first()
+        NKR = args["tinggi"] * HDKR.nilai * (1 + TTM)
+
+        if args["tipe_reklame"] == "permanen" :    
+            # harga dasar ukuran reklame (HDUR)
+            if args["luas"] <= 10 :
+                kode_luas = "-0"
+            elif args["luas"] > 50 :
+                kode_luas = "-50"
+            else :
+                kode_luas = "-10"
+            HDUR = variabel_perhitungan.filter_by(kata_kunci=("HDUR-"+jenis_reklame.kata_kunci + kode_luas)).first()
+
+            # harga dasar nilai strategis pemasangan reklame (HDNSPR)
+            if args["luas"] < 3 :
+                kode_luas = "-0"
+            elif args["luas"] < 10 :
+                kode_luas = "-3"
+            elif args["luas"] <= 50 :
+                kode_luas = "-10"
+            else :
+                kode_luas = "-50"
+            HDNSPR = variabel_perhitungan.filter_by(kata_kunci=("HDNS-JP-RP"+kode_luas)).first()
+
         else :
+            # harga dasar ukuran reklame (HDUR)
+            HDUR = variabel_perhitungan.filter_by(kata_kunci=("HDUR-"+jenis_reklame.kata_kunci)).first()
+            
+            # harga dasar nilai strategis pemasangan reklame (HDNSPR)
+            HDNSPR = variabel_perhitungan.filter_by(kata_kunci=("HDNS-"+jenis_reklame.kata_kunci)).first()
 
+        #nilai luas reklame (NLR)
+        NLR = args['luas'] * args['muka'] * HDUR.nilai * (1 + TTM)
 
-        return {"message": "Pembayaran sukses", "nomor_sspd": bukti_pembayaran.nomor_sspd}, 200, {'Content-Type': 'application/json'}
+        #nilai sudut pandang (NSP)
+        FSP = variabel_perhitungan.filter_by(nama = args["sudut_pandang"]).first()
+        NSP = FSP.nilai * HDNSPR.nilai
+
+        #nilai fungsi ruang (NFR)
+        FR = variabel_perhitungan.filter_by(nama = args["letak_pemasangan"]).first()
+        NFR = FR.nilai * HDNSPR.nilai
+
+        #nilai fungsi jalan (NFJ)
+        FJ = variabel_perhitungan.filter_by(nama = args["klasifikasi_jalan"]).first()
+        NFJ = FJ.nilai * HDNSPR.nilai
+
+        #nilai strategis pemasangan reklame (NSPR)
+        NSPR = NSP + NFR + NFJ
+
+        #nilai jual objek pajak reklame (NJOPR)
+        NJOPR = NLR + NKR
+
+        #nilai sewa reklame (NSR)
+        NSR = NSPR + NJOPR
+
+        #total pajak
+        tarif_pajak = variabel_perhitungan.filter_by(kata_kunci = "TPR").first()
+        jumlah_termin = 1
+        total_pajak = args["jumlah"] * jumlah_termin *  tarif_pajak.nilai * NSR
+
+        # menambah data laporan baru
+        nomor_skpd = str(5000 + objek_pajak.id)
+        laporan = Laporan(
+            objek_pajak.id, nomor_skpd, NFJ, NFR, NSP, HDNSPR.nilai, NKR, HDKR.nilai, NLR, HDUR.nilai, NJOPR,
+            NSPR, NSR, tarif_pajak.nilai, total_pajak, jumlah_termin 
+            )
+        print(total_pajak)
+        db.session.add(laporan)
+        db.session.commit()
+
+        return {"objek_pajak":marshal(objek_pajak, ObjekPajak.response_fields),
+                "laporan": marshal(laporan, Laporan.response_fields)}, 200, {'Content-Type': 'application/json'}
 
 api.add_resource(ObjekPajakResource, '/payer')
