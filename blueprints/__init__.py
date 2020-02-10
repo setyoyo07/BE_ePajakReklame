@@ -92,7 +92,7 @@ def after_request(response):
 from blueprints.auth import blueprint_auth
 from blueprints.daerah.model import blueprint_daerah
 from blueprints.objek_pajak.resources import blueprint_objek_pajak
-from blueprints.laporan.model import blueprint_laporan
+from blueprints.laporan.resources import blueprint_laporan
 from blueprints.bukti_pembayaran.resources import blueprint_bukti_pembayaran
 from blueprints.kode_qr.resources import blueprint_kode_qr
 from blueprints.variabel_perhitungan.resources import blueprint_variabel_perhitungan
@@ -106,5 +106,6 @@ app.register_blueprint(blueprint_kode_qr, url_prefix="/kode_qr")
 app.register_blueprint(blueprint_bukti_pembayaran, url_prefix="/bukti_pembayaran")
 app.register_blueprint(blueprint_objek_pajak, url_prefix="/objek_pajak")
 app.register_blueprint(blueprint_variabel_perhitungan, url_prefix="/variabel_hitung")
+app.register_blueprint(blueprint_laporan, url_prefix="/laporan")
 
 db.create_all()
