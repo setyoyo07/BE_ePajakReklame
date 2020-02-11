@@ -92,7 +92,7 @@ class PayerLaporanResource(Resource):
             laporan.status_pembayaran = True
             bukti_pembayaran = BuktiPembayaran.query.filter_by(laporan_id=laporan.id)
             bukti_pembayaran.nomor_sspd = objek_pajak.nopd + "/" + laporan.nomor_skpd + "/lunas"
-            return {"message": "Pembayran sukses", "nomor_sspd": bukti_pembayaran.nomor_sspd}, 200, {'Content-Type': 'application/json'}
+            return {"message": "Pembayaran sukses", "nomor_sspd": bukti_pembayaran.nomor_sspd}, 200, {'Content-Type': 'application/json'}
 
 api.add_resource(PayerLaporanList, '/payer')
 api.add_resource(PayerLaporanResource, '/payer', '/payer/<int:id>')

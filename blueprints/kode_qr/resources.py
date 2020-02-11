@@ -77,6 +77,9 @@ class OfficerKodeQRList(Resource):
         offset = (args['p'] * args['rp']) - args['rp']
         kode_QR = KodeQR.query
 
+        page = args["p"]
+        row_page = args["rp"]
+
         if args['bukti_pembayaran_id'] is not None:
             kode_QR = kode_QR.filter_by(bukti_pembayaran_id=args['bukti_pembayaran_id'])
         
@@ -86,11 +89,19 @@ class OfficerKodeQRList(Resource):
         list_kode_QR = []
         for kode_QR_satuan in kode_QR.limit(args['rp']).offset(offset).all():
             list_kode_QR.append(marshal(kode_QR_satuan, KodeQR.response_fields))
+        list_semua_kode_qr = []
+        for kode_QR_satuan in kode_QR.all():
+            list_semua_kode_qr.append(marshal(kode_QR_satuan, KodeQR.response_fields))
+
+        jumlah_kode_qr = len(list_semua_kode_qr)
+        maks_page = 1 + ((jumlah_kode_qr-1) // row_page)
 
         bukti_pembayaran = BuktiPembayaran.query.get(args["bukti_pembayaran_id"])
         laporan = Laporan.query.get(bukti_pembayaran.laporan_id)
         objek_pajak = ObjekPajak.query.get(laporan.objek_pajak_id)
-        return {"list_kode_qr": list_kode_QR, "nomor_sspd": bukti_pembayaran.nomor_sspd,
+
+        return {"page":page, "row_page": row_page, "maks_page":maks_page,
+                "list_kode_qr": list_kode_QR, "nomor_sspd": bukti_pembayaran.nomor_sspd,
                 "pelanggaran": bukti_pembayaran.pelanggaran,
                 "nama_reklame": objek_pajak.nama_reklame}, 200, {'Content-Type': 'application/json'}
 
@@ -118,6 +129,9 @@ class PayerKodeQRList(Resource):
         offset = (args['p'] * args['rp']) - args['rp']
         kode_QR = KodeQR.query
 
+        page = args["p"]
+        row_page = args["rp"]
+
         if args['bukti_pembayaran_id'] is not None:
             kode_QR = kode_QR.filter_by(bukti_pembayaran_id=args['bukti_pembayaran_id'])
         if args['kode_QR_id'] is not None:
@@ -131,9 +145,19 @@ class PayerKodeQRList(Resource):
         for kode_QR_satuan in kode_QR.limit(args['rp']).offset(offset).all():
             if objek_pajak.payer_id == id_payer:
                 list_kode_QR.append(marshal(kode_QR_satuan, KodeQR.response_fields))
+        
+        list_semua_kode_qr = []
+        for kode_QR_satuan in kode_QR.all():
+            if objek_pajak.payer_id == id_payer:
+                list_semua_kode_qr.append(marshal(kode_QR_satuan, KodeQR.response_fields))
+
+        jumlah_kode_qr = len(list_semua_kode_qr)
+        maks_page = 1 + ((jumlah_kode_qr-1) // row_page)
 
         if objek_pajak.payer_id == id_payer:
-            return {"list_kode_qr": list_kode_QR, "nomor_sspd": bukti_pembayaran.nomor_sspd,
+
+            return {"page":page, "row_page":row_page, "maks_page":maks_page,
+                "list_kode_qr": list_kode_QR, "nomor_sspd": bukti_pembayaran.nomor_sspd,
                 "pelanggaran": bukti_pembayaran.pelanggaran,
                 "nama_reklame": objek_pajak.nama_reklame}, 200, {'Content-Type': 'application/json'}
         return {"status": "Bukti pembayaran tidak valid"}, 200, {'Content-Type': 'application/json'}
