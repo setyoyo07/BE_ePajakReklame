@@ -86,13 +86,17 @@ class PayerLaporanResource(Resource):
             return {"message":"Permission denied"}, 403
         if args['status_pembatalan'] is not None:
             laporan.pembatalan_laporan = True
+            db.session.commit()
             return {"message": "Pembatalan Laporan sukses"}, 200, {'Content-Type': 'application/json'} 
 
         if args['status_pembayaran'] is not None:
             laporan.status_pembayaran = True
-            bukti_pembayaran = BuktiPembayaran.query.filter_by(laporan_id=laporan.id)
-            bukti_pembayaran.nomor_sspd = objek_pajak.nopd + "/" + laporan.nomor_skpd + "/lunas"
-            return {"message": "Pembayaran sukses", "nomor_sspd": bukti_pembayaran.nomor_sspd}, 200, {'Content-Type': 'application/json'}
+            db.session.commit()
+            nomor_sspd = objek_pajak.nopd + "/" + laporan.nomor_skpd + "/lunas"
+            bukti_pembayaran = BuktiPembayaran(laporan.id, payer.daerah_id, nomor_sspd, objek_pajak.jumlah)
+            db.session.add(bukti_pembayaran)
+            db.session.commit()
+            return {"message": "Pembayaran sukses", "bukti-pembayaran": marshal(bukti_pembayaran, BuktiPembayaran.response_fields)}, 200, {'Content-Type': 'application/json'}
 
 api.add_resource(PayerLaporanList, '/payer')
 api.add_resource(PayerLaporanResource, '/payer', '/payer/<int:id>')

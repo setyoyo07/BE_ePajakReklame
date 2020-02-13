@@ -77,7 +77,7 @@ class ObjekPajakResource(Resource):
         HDKR = variabel_perhitungan.filter_by(kata_kunci = ("HDKR-"+jenis_reklame.kata_kunci)).first()
         NKR = args["tinggi"] * HDKR.nilai * (1 + TTM)
 
-        if args["tipe_reklame"] == "permanen" :    
+        if args["tipe_reklame"] == "Reklame Permanen" :    
             # harga dasar ukuran reklame (HDUR)
             if args["luas"] <= 10 :
                 kode_luas = "-0"
@@ -96,7 +96,7 @@ class ObjekPajakResource(Resource):
                 kode_luas = "-10"
             else :
                 kode_luas = "-50"
-            HDNSPR = variabel_perhitungan.filter_by(kata_kunci=("HDNS-JP-RP"+kode_luas)).first()
+            HDNSPR = variabel_perhitungan.filter_by(kata_kunci=("HDNS-JR-RP"+kode_luas)).first()
 
         else :
             # harga dasar ukuran reklame (HDUR)
