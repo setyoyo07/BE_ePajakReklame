@@ -40,7 +40,7 @@ class OfficerKodeQRResource(Resource):
         if bukti_pembayaran is None:
             return {'message':'bukti_pembayaran_id tidak ditemukan'}, 404
         if bukti_pembayaran.status_buat_kode_qr:
-            return {'message':'kode QR sudah di generate'}
+            return {'message':'kode QR sudah di generate'}, 400
         jumlah_kodeQR = bukti_pembayaran.jumlah_reklame
         nomor_sspd = bukti_pembayaran.nomor_sspd
         
