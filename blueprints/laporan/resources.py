@@ -2,6 +2,7 @@ from flask_restful import Resource, Api, reqparse, marshal
 from flask import Blueprint
 from blueprints import db, app, payer_required
 from .model import *
+from sqlalchemy import desc
 from blueprints.payer.model import Payer
 from blueprints.objek_pajak.model import ObjekPajak
 from blueprints.bukti_pembayaran.model import BuktiPembayaran
@@ -24,8 +25,9 @@ class PayerLaporanList(Resource):
         payer_claims_data = get_jwt_claims()
         payer = Payer.query.get(payer_claims_data["id"])
         marshalPayer = marshal(payer, Payer.response_fields)
-        laporan = Laporan.query.all()
-        
+        laporan = Laporan.query
+        laporan = laporan.order_by(desc(Laporan.id)).all()
+
         list_hasil = []
         for laporan_satuan in laporan:
             objek_pajak = ObjekPajak.query.get(laporan_satuan.objek_pajak_id)

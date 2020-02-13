@@ -30,7 +30,8 @@ class TestObjekPajak():
             "tarif_tambahan":"Rokok/Miras",
             "letak_pemasangan":"Kawasan Umum",
             "klasifikasi_jalan":"Jalan Kabupaten",
-            "sudut_pandang":"1 arah"
+            "sudut_pandang":"1 arah",
+            "jangka_waktu_pajak":"Mingguan"
         }
         res = user.post("/objek_pajak/payer", json=data, headers={"Authorization": "Bearer "+token})
         res_json = json.loads(res.data)
@@ -61,7 +62,8 @@ class TestObjekPajak():
             "tarif_tambahan":"Rokok/Miras",
             "letak_pemasangan":"Kawasan Umum",
             "klasifikasi_jalan":"Jalan Kabupaten",
-            "sudut_pandang":"1 arah"
+            "sudut_pandang":"1 arah",
+            "jangka_waktu_pajak":"Mingguan"
         }
         res = user.post("/objek_pajak/payer", json=data, headers={"Authorization": "Bearer "+token})
         res_json = json.loads(res.data)
@@ -92,7 +94,8 @@ class TestObjekPajak():
             "tarif_tambahan":"Rokok/Miras",
             "letak_pemasangan":"Kawasan Umum",
             "klasifikasi_jalan":"Jalan Kabupaten",
-            "sudut_pandang":"1 arah"
+            "sudut_pandang":"1 arah",
+            "jangka_waktu_pajak":"Mingguan"
         }
         res = user.post("/objek_pajak/payer", json=data, headers={"Authorization": "Bearer "+token})
         res_json = json.loads(res.data)
@@ -123,7 +126,8 @@ class TestObjekPajak():
             "tarif_tambahan":"Rokok/Miras",
             "letak_pemasangan":"Kawasan Umum",
             "klasifikasi_jalan":"Jalan Kabupaten",
-            "sudut_pandang":"1 arah"
+            "sudut_pandang":"1 arah",
+            "jangka_waktu_pajak":"Mingguan"
         }
         res = user.post("/objek_pajak/payer", json=data, headers={"Authorization": "Bearer "+token})
         res_json = json.loads(res.data)
@@ -154,7 +158,8 @@ class TestObjekPajak():
             "tarif_tambahan":"Rokok/Miras",
             "letak_pemasangan":"Kawasan Umum",
             "klasifikasi_jalan":"Jalan Kabupaten",
-            "sudut_pandang":"1 arah"
+            "sudut_pandang":"1 arah",
+            "jangka_waktu_pajak":"Mingguan"
         }
         res = user.post("/objek_pajak/payer", json=data, headers={"Authorization": "Bearer "+token})
         res_json = json.loads(res.data)

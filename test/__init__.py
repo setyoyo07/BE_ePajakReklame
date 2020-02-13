@@ -30,8 +30,8 @@ def reset_db():
     db.session.add(payer)
     db.session.commit()
 
-    objek_pajak1 = ObjekPajak(1, '1001', 'Iklan Perumahan', 'Harga mulai dari 300 juta', 'Reklame Non Permanen', 'Spanduk, Umbul-umbul, Banner, Layar Toko','https://sribu-sg.s3.amazonaws.com/assets/media/contest_detail/2016/11/desain-banner-untuk-center-park-5839ad95faaa266f0000a583/normal_d432e6fb30.jpg',1, 2, 3, 3, '2020-01-15 14:29:36', '2020-01-25 14:29:36', 'Januari 2020', '112.609817', '-7.965917','Jalan Tidar, Malang', 1, 2,'Non Rokok/Miras', 'Kawasan Umum','Jalan Kabupaten','1 arah')
-    objek_pajak2 = ObjekPajak(1, '1002', 'Iklan Konser', 'Konser Akbar Raisa', 'Reklame Permanen', 'Billboard/Bando','https://sribu-sg.s3.amazonaws.com/assets/media/contest_detail/2016/11/desain-banner-untuk-center-park-5839ad95faaa266f0000a583/normal_d432e6fb30.jpg',1, 2, 3, 2, '2020-01-15 14:29:36', '2020-01-25 14:29:36', 'Februari 2020', '112.6237303', '-7.97509837','Jalan Tenes, Malang', 1, 2,'Non Rokok/Miras', 'Kawasan Umum','Jalan Kabupaten','1 arah')
+    objek_pajak1 = ObjekPajak(1, '1001', 'Iklan Perumahan', 'Harga mulai dari 300 juta', 'Reklame Non Permanen', 'Spanduk, Umbul-umbul, Banner, Layar Toko','https://sribu-sg.s3.amazonaws.com/assets/media/contest_detail/2016/11/desain-banner-untuk-center-park-5839ad95faaa266f0000a583/normal_d432e6fb30.jpg',1, 2, 3, 3, '2020-01-15 14:29:36', '2020-01-25 14:29:36', 'Januari 2020', '112.609817', '-7.965917','Jalan Tidar, Malang', 1, 2,'Non Rokok/Miras', 'Kawasan Umum','Jalan Kabupaten','1 arah','Mingguan')
+    objek_pajak2 = ObjekPajak(1, '1002', 'Iklan Konser', 'Konser Akbar Raisa', 'Reklame Permanen', 'Billboard/Bando','https://sribu-sg.s3.amazonaws.com/assets/media/contest_detail/2016/11/desain-banner-untuk-center-park-5839ad95faaa266f0000a583/normal_d432e6fb30.jpg',1, 2, 3, 2, '2020-01-15 14:29:36', '2020-01-25 14:29:36', 'Februari 2020', '112.6237303', '-7.97509837','Jalan Tenes, Malang', 1, 2,'Non Rokok/Miras', 'Kawasan Umum','Jalan Kabupaten','1 arah','Tahunan')
     db.session.add(objek_pajak1)
     db.session.add(objek_pajak2)
     db.session.commit()
@@ -49,13 +49,13 @@ def reset_db():
     bukti_pembayaran2.status_buat_kode_qr = True
     db.session.commit()
 
-
     kode_qr1 = KodeQR(1, 'alterratax123451', 'https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=alterratax123451')
     kode_qr2 = KodeQR(1, 'alterratax123452', 'https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=alterratax123452')
     kode_qr3 = KodeQR(1, 'alterratax123453', 'https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=alterratax123453')
     db.session.add(kode_qr1)
     db.session.add(kode_qr2)
     db.session.add(kode_qr3)
+    kode_qr1.status_scan = True
     db.session.commit()
 
     variabel1 = VariabelPerhitungan('Tarif Pajak Reklame', '', 'TPR', 0.25)

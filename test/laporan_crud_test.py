@@ -4,10 +4,10 @@ from flask_jwt_extended import jwt_required, get_jwt_claims
 from blueprints import db, payer_required
 
 class TestLaporan():
-    reset_db()
 
     # GET Semua Data Laporan milik Payer
     def test_laporan_get_all(self, user):
+        reset_db()
         token = create_token(role='payer')
         data = {}
         res = user.get("/laporan/payer", query_string=data, headers={"Authorization": "Bearer "+token})
@@ -37,7 +37,7 @@ class TestLaporan():
     def test_laporan_put_batal(self, user):
         token = create_token(role='payer')
         data = {
-            "laporan_id":3,
+            "laporan_id":2,
             "status_pembatalan":True
         }
         res = user.put("/laporan/payer", json=data, headers={"Authorization": "Bearer "+token})
