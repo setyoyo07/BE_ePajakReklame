@@ -96,7 +96,9 @@ class PayerLaporanResource(Resource):
             bukti_pembayaran = BuktiPembayaran(laporan.id, payer.daerah_id, nomor_sspd, objek_pajak.jumlah)
             db.session.add(bukti_pembayaran)
             db.session.commit()
-            return {"message": "Pembayaran sukses", "bukti-pembayaran": marshal(bukti_pembayaran, BuktiPembayaran.response_fields)}, 200, {'Content-Type': 'application/json'}
+            return {"message": "Pembayaran sukses",
+            "laporan": marshal(laporan, Laporan.response_fields), 
+            "bukti-pembayaran": marshal(bukti_pembayaran, BuktiPembayaran.response_fields)}, 200, {'Content-Type': 'application/json'}
 
 api.add_resource(PayerLaporanList, '/payer')
 api.add_resource(PayerLaporanResource, '/payer', '/payer/<int:id>')

@@ -7,6 +7,7 @@ from blueprints.objek_pajak.model import ObjekPajak
 from blueprints.laporan.model import Laporan
 from blueprints.variabel_perhitungan.model import VariabelPerhitungan
 from flask_jwt_extended import jwt_required, get_jwt_claims, verify_jwt_in_request
+import math
 
 blueprint_objek_pajak = Blueprint("objek_pajak", __name__)
 api = Api(blueprint_objek_pajak)
@@ -46,6 +47,8 @@ class ObjekPajakResource(Resource):
         parser.add_argument('letak_pemasangan', location='json', required=True)
         parser.add_argument('klasifikasi_jalan', location='json', required=True)
         parser.add_argument('sudut_pandang', location='json', required=True)
+        parser.add_argument('jangka_waktu_pajak', location='json', required=True)
+
         args = parser.parse_args()
 
         get_id = ObjekPajak.query.order_by(desc('id')).first()
@@ -60,7 +63,7 @@ class ObjekPajakResource(Resource):
             args["jenis_reklame"], args["foto"], args["panjang"], args["lebar"], args["tinggi"],
             args["jumlah"], args["tanggal_pemasangan"], args["tanggal_pembongkaran"], args["masa_pajak"],
             args["longitude"], args["latitude"], args["lokasi"], args["muka"], args['luas'], args["tarif_tambahan"],
-            args["letak_pemasangan"], args["klasifikasi_jalan"], args["sudut_pandang"]
+            args["letak_pemasangan"], args["klasifikasi_jalan"], args["sudut_pandang"], args["jangka_waktu_pajak"]
             )
         db.session.add(objek_pajak)
         db.session.commit()
@@ -131,9 +134,21 @@ class ObjekPajakResource(Resource):
 
         #total pajak
         tarif_pajak = variabel_perhitungan.filter_by(kata_kunci = "TPR").first()
-        jumlah_termin = 1
+        jumlah_termin = 1 
+        if args["jangka_waktu_pajak"] == "Mingguan":
+            selisih_hari = str(objek_pajak.tanggal_pembongkaran - objek_pajak.tanggal_pemasangan)
+            selisih_hari = selisih_hari.split(" ")
+            selisih_hari = int(selisih_hari[0])
+            jumlah_termin = math.ceil(selisih_hari/7)
+        elif args ["jangka_waktu_pajak"] == "Tahunan":
+            selisih_hari = str(objek_pajak.tanggal_pembongkaran - objek_pajak.tanggal_pemasangan)
+            selisih_hari = selisih_hari.split(" ")
+            selisih_hari = int(selisih_hari[0])
+            jumlah_termin = math.ceil(selisih_hari/365)
+        
         total_pajak = args["jumlah"] * jumlah_termin *  tarif_pajak.nilai * NSR
 
+        print(selisih_hari)
         # menambah data laporan baru
         nomor_skpd = str(5000 + objek_pajak.id)
         laporan = Laporan(
@@ -145,6 +160,8 @@ class ObjekPajakResource(Resource):
         db.session.commit()
 
         return {"objek_pajak":marshal(objek_pajak, ObjekPajak.response_fields),
-                "laporan": marshal(laporan, Laporan.response_fields)}, 200, {'Content-Type': 'application/json'}
+                "laporan": marshal(laporan, Laporan.response_fields),
+                "selisih_hari": selisih_hari
+                }, 200, {'Content-Type': 'application/json'}
 
 api.add_resource(ObjekPajakResource, '/payer')
