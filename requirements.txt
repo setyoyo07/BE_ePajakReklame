@@ -39,3 +39,4 @@ Werkzeug==0.16.0
 zipp==0.6.0
 Flask-Cors==3.0.8
 mock==4.0.1
+midtransclient==1.1.1
