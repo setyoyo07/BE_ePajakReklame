@@ -95,12 +95,21 @@ class PayerBayarLaporan(Resource):
         fraud_status = status_response['fraud_status']
         status_code = status_response['status_code']
 
+        laporan = Laporan.query.get(order_id)
         if status_code == "200" :
-            laporan = Laporan.query.get(order_id)
             laporan.status_pembayaran = True
             db.session.commit()
-
-        return {'message':'status pembayaran diterima'},200
+            objek_pajak = ObjekPajak.query.get(laporan.objek_pajak_id)
+            payer = Payer.query.get(objek_pajak.payer_id)
+            nomor_sspd = objek_pajak.nopd + laporan.nomor_skpd
+            bukti_pembayaran = BuktiPembayaran(laporan.id, payer.daerah_id, nomor_sspd, objek_pajak.jumlah)
+            db.session.add(bukti_pembayaran)
+            db.session.commit()
+            return {'message':'status pembayaran diterima'},200
+        elif transaction_status == "expire" :
+            laporan.pembatalan_laporan = True
+            db.session.commit()
+            return {'message':'status pembayaran diterima'},200    
     
 #Resource model laporan oleh payer spesifik berdasarkan laporan id-nya
 class PayerLaporanResource(Resource):
