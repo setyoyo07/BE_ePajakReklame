@@ -23,7 +23,6 @@ try:
     if env == 'testing':
         app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:Alterra@123@127.0.0.1:3306/rest_projek_reklame_test'
     else:
-        # app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:Alterra@123@127.0.0.1:3306/rest_projek_reklame_test'
         app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:seshasab072917@rest-portofolio.cmm0q8q3tp0t.ap-southeast-1.rds.amazonaws.com:3306/rest_projek_reklame'
 except Exception as e:
     raise e
