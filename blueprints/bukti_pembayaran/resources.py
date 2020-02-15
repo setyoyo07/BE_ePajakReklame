@@ -128,7 +128,7 @@ class PayerBuktiPembayaranResource(Resource):
         payer = Payer.query.get(payer_claims_data["id"])
         bukti_pembayaran = BuktiPembayaran.query.filter_by(laporan_id=id).first()
         if bukti_pembayaran is None:
-            return {"message":"Data bukti pembayaran tidak ditemukan"}
+            return {"message":"Data bukti pembayaran tidak ditemukan"}, 404
 
         laporan = Laporan.query.get(bukti_pembayaran.laporan_id)
         objek_pajak = ObjekPajak.query.get(laporan.objek_pajak_id)

@@ -20,7 +20,7 @@ class PayerResources(Resource):
     def get(self): 
         data_claims = get_jwt_claims()
         payer = Payer.query.get(data_claims["id"])
-        daerah = Daerah.query.get(payer.daerah_id).first()
+        daerah = Daerah.query.get(payer.daerah_id)
         marshalPayer = marshal(payer, Payer.response_fields)
         marshalPayer["nama_daerah"] = daerah.nama 
         return [marshalPayer], 200, {"Content-Type": "application/json"}
