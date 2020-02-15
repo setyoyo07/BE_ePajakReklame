@@ -31,6 +31,7 @@ class ObjekPajak(db.Model):
     letak_pemasangan = db.Column(db.String(255), nullable=False)
     klasifikasi_jalan = db.Column(db.String(255), nullable=False)
     sudut_pandang = db.Column(db.String(255), nullable=False)
+    jangka_waktu_pajak = db.Column(db.String(255), nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.now())
     updated_at = db.Column(db.DateTime, default=datetime.now())
     
@@ -59,6 +60,7 @@ class ObjekPajak(db.Model):
         "letak_pemasangan": fields.String,
         "klasifikasi_jalan": fields.String,
         "sudut_pandang": fields.String,
+        "jangka_waktu_pajak": fields.String,
         "created_at": fields.DateTime,
         "updated_at": fields.DateTime,
     }
@@ -66,7 +68,7 @@ class ObjekPajak(db.Model):
     def __init__(self, payer_id, nopd, nama_reklame, judul_reklame, tipe_reklame, jenis_reklame,
                 foto, panjang, lebar, tinggi, jumlah, tanggal_pemasangan, tanggal_pembongkaran, masa_pajak,
                 longitude, latitude, lokasi, muka, luas, tarif_tambahan, letak_pemasangan, klasifikasi_jalan,
-                sudut_pandang):
+                sudut_pandang, jangka_waktu_pajak):
         self.payer_id = payer_id
         self.nopd = nopd
         self.nama_reklame = nama_reklame
@@ -90,6 +92,7 @@ class ObjekPajak(db.Model):
         self.letak_pemasangan = letak_pemasangan
         self.klasifikasi_jalan = klasifikasi_jalan
         self.sudut_pandang = sudut_pandang
+        self.jangka_waktu_pajak = jangka_waktu_pajak
         
     def __repr__(self):
         return "<ObjekPajak %r>" % self.id
