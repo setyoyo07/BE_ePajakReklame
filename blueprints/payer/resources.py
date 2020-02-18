@@ -8,16 +8,35 @@ from blueprints.daerah.model import Daerah
 blueprint_payer = Blueprint("payer", __name__)
 api_payer = Api(blueprint_payer)
 
-#Resource model database payer untuk mengambil data payer
 class PayerResources(Resource):
-    # fungsi untuk handle CORS
+    """
+    A class used to contain Payer's action to Get payer info data
+
+    Methods
+    -------
+    options(id=None)
+        Return status ok when get hit
+    get
+        Return payer info data
+    """
     def options(self, id=None):
         return {'status':'ok'},200
 
-    #mengambil data payer (data diri untuk user (payer) yg sedang login)
     @jwt_required
     @payer_required
     def get(self): 
+        """
+        Get payer info data
+
+        Response
+        --------
+        id = int
+        npwpd = str
+        nama = str
+        nama_usaha = str
+        alamat_usaha = str
+        nama_daerah = str
+        """
         data_claims = get_jwt_claims()
         payer = Payer.query.get(data_claims["id"])
         daerah = Daerah.query.get(payer.daerah_id)
