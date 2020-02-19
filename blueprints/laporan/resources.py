@@ -12,16 +12,33 @@ import midtransclient
 blueprint_laporan = Blueprint("laporan", __name__)
 api = Api(blueprint_laporan)
 
-#Resource model laporan oleh payer
 class PayerLaporanList(Resource):
-    # fungsi untuk handle CORS
+    """
+    Class yang digunakan untuk mengakomodasi aktivitas Payer Mendapatkan List data Laporan
+
+    Methods
+    -------
+    options(id=None)
+        Return status ok ketika API ditembak
+    get
+        Return List Data Laporan milik Payer
+    """
     def options(self, id=None):
         return 200
 
-    #fungsi untuk mengambil data semua laporan milik payer
     @jwt_required
     @payer_required
     def get(self):
+        """
+        Fungsi untuk mengambil (get) data list laporan milik payer
+
+        Response
+        --------
+        list_laporan : array / list
+          daftar laporan milik payer
+        payer : dictionary / object
+          data informasi milik payer
+        """
         verify_jwt_in_request() 
         payer_claims_data = get_jwt_claims()
         payer = Payer.query.get(payer_claims_data["id"])

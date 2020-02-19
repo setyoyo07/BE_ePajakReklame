@@ -10,14 +10,14 @@ api_payer = Api(blueprint_payer)
 
 class PayerResources(Resource):
     """
-    A class used to contain Payer's action to Get payer info data
+    Class yang digunakan untuk mengakomodasi aktivitas Payer
 
     Methods
     -------
     options(id=None)
-        Return status ok when get hit
+        Return status ok ketika API ditembak
     get
-        Return payer info data
+        Return Data informasi dari Payer
     """
     def options(self, id=None):
         return {'status':'ok'},200
@@ -26,16 +26,22 @@ class PayerResources(Resource):
     @payer_required
     def get(self): 
         """
-        Get payer info data
+        Fungsi untuk mengambil (get) data informasi mengenai payer
 
         Response
         --------
-        id = int
-        npwpd = str
-        nama = str
-        nama_usaha = str
-        alamat_usaha = str
-        nama_daerah = str
+        id : int
+          id dari payer, diambil dari database  
+        npwpd : str
+          nomor pokok wajib pajak daerah milik payer, diambil dari database
+        nama : str
+          nama payer, diambil dari database
+        nama_usaha : str
+          nama usaha milik payer, diambil dari database
+        alamat_usaha : str
+          alamat usaha milik payer, diambil dari database
+        nama_daerah : str
+          nama daerah (Kota/Kabupaten) tempat payer memasang pajak reklame, diambil dari database
         """
         data_claims = get_jwt_claims()
         payer = Payer.query.get(data_claims["id"])
